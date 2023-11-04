@@ -6,6 +6,7 @@ d3.csv("data/2021CoderFiltered.csv").then((data) => {
     // preprocess data
   });
   console.log("data", data);
+  // temporary, to be updated
   const filteredData = data.filter(
     (d) => d.Top_Reason === "To start your first career"
   );
