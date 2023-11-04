@@ -66,7 +66,12 @@ class DotMatrix {
     const CIRCLE_SPACING = 5;
     const ROW_UNIT = CIRCLE_DIAM + CIRCLE_SPACING;
     let vis = this;
-    const dots = vis.matrixArea.selectAll(".dots").data(vis.data, (d) => d.ID);
+    const dots = vis.matrixArea.selectAll(".dots").data(
+      vis.data.sort((a, b) =>
+        a.Self_Perception.localeCompare(b.Self_Perception)
+      ),
+      (d) => d.ID
+    );
     console.log("vis data", vis.data);
     dots
       .enter()
@@ -89,6 +94,17 @@ class DotMatrix {
         );
       })
       .attr("r", (d) => CIRCLE_RADIUS)
-      .attr("fill", "red");
+      .attr("fill", (d) => {
+        const perception = d.Self_Perception;
+        if (perception === "Male") {
+          return "orange";
+        } else if (perception === "Female") {
+          return "blue";
+        } else if (perception === "Nonbinary") {
+          return "purple";
+        } else {
+          return "green";
+        }
+      });
   }
 }
