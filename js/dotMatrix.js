@@ -139,8 +139,12 @@ class DotMatrix {
           .style("left", event.pageX + vis.config.tooltipPadding + "px")
           .style("top", event.pageY + vis.config.tooltipPadding + "px").html(`
     
-         <div><i>${d.Age}</i></div>
+         <div><li>Age: ${d.Age}</li></div>
+         <li>Gender: ${d.Self_Perception}</li>
+         <li>Location: ${d.Location}</li>
            <li>University study: ${d.University_Study}</li>
+           <li>Current Employment Status: ${d.Current_Employment_Status}</li>
+           <li>Current Field of Work: ${d.Current_Field_of_Work}</li>
        `);
       })
       .on("mouseleave", () => {

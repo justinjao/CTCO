@@ -12,16 +12,14 @@ body * {
 
  
 .dot-matrix-container {
-    width: 50%;
+    width: 60%;
     border-right: 1px solid black;
-    width: 100%;
+
     border-bottom: 1px solid black;
 }
 
 
 .matrix-area {
-    /* stroke:blue;
-    stroke-width: 1px; */
     fill: transparent;
     
 }
@@ -35,20 +33,22 @@ body * {
     position: absolute;
     display: none;
     background: #fff;
-    box-shadow: 3px 3px 3px 0px rgb(92 92 92 / 0.5);
     border: 1px solid #ddd;
-    font-size: 12px;
-    font-weight: 500;
     padding: 8px;
     min-width: 160px;
     color: #333;
+    border-radius: 10px;
+    box-shadow: 5px 5px 5px 0px rgba(0, 0, 0, 0.2);
+    font-family: 'Poppins', sans-serif; 
   }
+  
   .tooltip-title {
     color: #000;
     font-size: 14px;
     font-weight: 600;
+    margin: 0;
   }
-
+  
   #tooltip ul {
     margin: 5px 0 0 0;
     padding-left: 20px;
