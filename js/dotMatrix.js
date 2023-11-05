@@ -17,6 +17,7 @@ class DotMatrix {
         left: 50,
       },
     };
+    this.activeSort = "gender";
     this.data = data;
     this.initVis();
   }
@@ -64,6 +65,17 @@ class DotMatrix {
 
   updateVis() {
     let vis = this;
+
+    if (vis.activeSort === "gender") {
+      vis.data = vis.data.sort((a, b) =>
+        a.Self_Perception.localeCompare(b.Self_Perception)
+      );
+    } else if (vis.activeSort === "location") {
+      vis.data = vis.data.sort((a, b) => a.Location.localeCompare(b.Location));
+    } else {
+      vis.data = vis.data.sort((a, b) => a.Age.localeCompare(b.Age));
+    }
+
     vis.renderVis();
   }
 
@@ -76,12 +88,7 @@ class DotMatrix {
     const DOTS_PER_ROW = Math.floor(vis.config.width / DOT_UNIT);
     const ROW_OFFSET = vis.config.margin.left + CIRCLE_RADIUS;
 
-    const dots = vis.matrixArea.selectAll(".dots").data(
-      vis.data.sort((a, b) =>
-        a.Self_Perception.localeCompare(b.Self_Perception)
-      ),
-      (d) => d.ID
-    );
+    const dots = vis.matrixArea.selectAll(".dots").data(vis.data, (d) => d.ID);
     const dotsEnter = dots.enter().append("circle").attr("class", "dot");
 
     dotsEnter
