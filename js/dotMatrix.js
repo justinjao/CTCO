@@ -19,6 +19,23 @@ class DotMatrix {
     };
     this.activeSort = "gender";
     this.data = data;
+    this.legendMapping = [
+      {
+        name: "gender",
+        Male: "purple",
+        Female: "orange",
+        Nonbinary: "pink",
+        "None of the Above": "green",
+      },
+      {
+        name: "age",
+        "19-27": "yellow",
+      },
+      {
+        name: "location",
+        "Latin America and Caribbean": "yellow",
+      },
+    ];
     this.initVis();
   }
 
@@ -65,7 +82,7 @@ class DotMatrix {
 
   updateVis() {
     let vis = this;
-
+    vis.activeLegend = vis.legendMapping.find((l) => l.name === vis.activeSort);
     if (vis.activeSort === "gender") {
       vis.data = vis.data.sort((a, b) =>
         a.Self_Perception.localeCompare(b.Self_Perception)
@@ -102,18 +119,7 @@ class DotMatrix {
         );
       })
       .attr("r", (d) => CIRCLE_RADIUS)
-      .attr("fill", (d) => {
-        const perception = d.Self_Perception;
-        if (perception === "Male") {
-          return "orange";
-        } else if (perception === "Female") {
-          return "blue";
-        } else if (perception === "Nonbinary") {
-          return "purple";
-        } else {
-          return "green";
-        }
-      })
+      .attr("fill", (d) => vis.renderBasedOnSort(d, vis.activeSort))
       .on("mouseover", (event, d) => {
         console.log("MOUSE OVER");
         d3
@@ -130,5 +136,27 @@ class DotMatrix {
         d3.select("#tooltip").style("display", "none");
         // Remove the outline when the mouse leaves
       });
+  }
+  renderBasedOnSort(d, sort) {
+    let vis = this;
+    if (sort === "gender") {
+      const perception = d.Self_Perception;
+      return vis.activeLegend[perception];
+      //   if (perception === "Male") {
+      //     return "orange";
+      //   } else if (perception === "Female") {
+      //     return "blue";
+      //   } else if (perception === "Nonbinary") {
+      //     return "purple";
+      //   } else {
+      //     return "green";
+      //   }
+    } else if (sort === "location") {
+      const location = d.Location;
+      return vis.activeLegend[location];
+    } else {
+      const age = d.Age;
+      return vis.activeLegend[age];
+    }
   }
 }
