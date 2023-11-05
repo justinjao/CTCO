@@ -68,11 +68,14 @@ class DotMatrix {
   }
 
   renderVis() {
+    let vis = this;
     const CIRCLE_RADIUS = 6;
     const CIRCLE_DIAM = 2 * CIRCLE_RADIUS;
     const CIRCLE_SPACING = 5;
-    const ROW_UNIT = CIRCLE_DIAM + CIRCLE_SPACING;
-    let vis = this;
+    const DOT_UNIT = CIRCLE_DIAM + CIRCLE_SPACING;
+    const DOTS_PER_ROW = Math.floor(vis.config.width / DOT_UNIT);
+    const ROW_OFFSET = vis.config.margin.left + CIRCLE_RADIUS;
+
     const dots = vis.matrixArea.selectAll(".dots").data(
       vis.data.sort((a, b) =>
         a.Self_Perception.localeCompare(b.Self_Perception)
@@ -83,18 +86,10 @@ class DotMatrix {
 
     dotsEnter
       .merge(dots)
-      .attr(
-        "cx",
-        (d, i) =>
-          (i % Math.floor(vis.config.width / ROW_UNIT)) * ROW_UNIT +
-          vis.config.margin.left +
-          CIRCLE_RADIUS
-      ) // Adjust the positioning
+      .attr("cx", (d, i) => (i % DOTS_PER_ROW) * DOT_UNIT + ROW_OFFSET) // Adjust the positioning
       .attr("cy", (d, i) => {
-        console.log("circle ", i);
-
         return (
-          Math.floor(i / (vis.config.width / ROW_UNIT)) * ROW_UNIT +
+          Math.floor(i / DOTS_PER_ROW) * DOT_UNIT +
           vis.config.margin.top +
           CIRCLE_RADIUS
         );
