@@ -7,14 +7,14 @@ class DotMatrix {
   constructor(_config, data) {
     this.config = {
       parentElement: _config.parentElement,
-      containerWidth: 600,
-      containerHeight: 300,
+      containerWidth: 800,
+      containerHeight: 500,
       tooltipPadding: 15,
       margin: {
-        top: 15,
-        right: 15,
-        bottom: 15,
-        left: 15,
+        top: 50,
+        right: 50,
+        bottom: 50,
+        left: 50,
       },
     };
     this.data = data;
@@ -33,7 +33,6 @@ class DotMatrix {
       vis.config.containerHeight -
       vis.config.margin.top -
       vis.config.margin.bottom;
-    console.log(vis.config.parentElement);
     // Define size of SVG drawing area
     vis.svg = d3
       .select(vis.config.parentElement)
@@ -51,6 +50,14 @@ class DotMatrix {
       .attr("class", "matrix-area")
       .attr("x", vis.config.margin.left)
       .attr("y", vis.config.margin.top);
+
+    vis.yAxisTitle = vis.matrixArea
+      .append("text")
+      .attr("class", "axis-title")
+      .attr("x", 10)
+      .attr("y", 10)
+      .attr("dy", ".95em")
+      .text("Demographics");
 
     vis.updateVis();
   }
@@ -72,11 +79,10 @@ class DotMatrix {
       ),
       (d) => d.ID
     );
-    console.log("vis data", vis.data);
-    dots
-      .enter()
-      .append("circle")
-      .attr("class", "dot")
+    const dotsEnter = dots.enter().append("circle").attr("class", "dot");
+
+    dotsEnter
+      .merge(dots)
       .attr(
         "cx",
         (d, i) =>
@@ -105,6 +111,22 @@ class DotMatrix {
         } else {
           return "green";
         }
+      })
+      .on("mouseover", (event, d) => {
+        console.log("MOUSE OVER");
+        d3
+          .select("#tooltip")
+          .style("display", "block")
+          .style("left", event.pageX + vis.config.tooltipPadding + "px")
+          .style("top", event.pageY + vis.config.tooltipPadding + "px").html(`
+         <div class="tooltip-title">${d.ID}</div>
+         <div><i>${d.Age}</i></div>
+           <li>University study: ${d.University_Study}</li>
+       `);
+      })
+      .on("mouseleave", () => {
+        d3.select("#tooltip").style("display", "none");
+        // Remove the outline when the mouse leaves
       });
   }
 }

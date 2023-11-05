@@ -7,17 +7,28 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>    
-    <h1>Coding Odyssey</h1>
+    <h1>Cracking the Coding Odyssey</h1>
     <!-- Add HTML content, SVG drawing area, ... -->
     <div class="chart-container">
-
             <div class="dot-matrix-container">
-                <div id="matrix"></div>
+                <div id="matrix">
+        
+                </div>
+                <div id="sorting-options">
+                    <label>
+                      <input type="radio" name="sort-option" value="location"> Location
+                    </label>
+                    <label>
+                      <input type="radio" name="sort-option" value="gender"> Gender
+                    </label>
+                    <label>
+                      <input type="radio" name="sort-option" value="age"> Age
+                    </label>
+                  </div>
             </div>
-
     </div>
  
-   
+    <div id="tooltip"></div>
     <!-- D3 bundle -->
     <script src="js/d3.v6.min.js"></script>
 
