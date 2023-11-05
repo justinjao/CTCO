@@ -22,18 +22,32 @@ class DotMatrix {
     this.legendMapping = [
       {
         name: "gender",
-        Male: "purple",
-        Female: "orange",
-        Nonbinary: "pink",
-        "None of the Above": "green",
+        Male: "#fbb4ae",
+        Female: "#b3cde3",
+        Nonbinary: "#ccebc5",
+        "None of the Above": "#decbe4",
       },
       {
         name: "age",
-        "19-27": "yellow",
+        "10-18": "#b3e2cd",
+        "19-27": "#fdcdac",
+        "28-36": "#cbd5e8",
+        "37-45": "#f4cae4",
+        "46-54": "#e6f5c9",
+        "55-63": "#fff2ae",
+        "64-72": "#f1e2cc",
+        "73+": "#cccccc",
       },
       {
         name: "location",
-        "Latin America and Caribbean": "yellow",
+        "Latin America and Caribbean": "#8dd3c7",
+        "East Asia and Pacific": "#ffffb3",
+        "Europe and Central Asia": "#bebada",
+        "Middle East and North Africa": "#fb8072",
+        "North America": "#80b1d3",
+        "South Asia": "#fdb462",
+        "Southeast Asia": "#b3de69",
+        "Sub-Saharan Africa": "#fccde5",
       },
     ];
     this.initVis();
@@ -68,14 +82,6 @@ class DotMatrix {
       .attr("class", "matrix-area")
       .attr("x", vis.config.margin.left)
       .attr("y", vis.config.margin.top);
-
-    vis.yAxisTitle = vis.matrixArea
-      .append("text")
-      .attr("class", "axis-title")
-      .attr("x", 10)
-      .attr("y", 10)
-      .attr("dy", ".95em")
-      .text("Demographics");
 
     vis.legendContainer = vis.svg
       .append("g")
@@ -123,6 +129,8 @@ class DotMatrix {
       })
       .attr("r", (d) => CIRCLE_RADIUS)
       .attr("fill", (d) => vis.renderBasedOnSort(d, vis.activeSort))
+      .style("stroke", "black")
+      .style("stroke-width", 0.5)
       .on("mouseover", (event, d) => {
         console.log("MOUSE OVER");
         d3
@@ -130,7 +138,7 @@ class DotMatrix {
           .style("display", "block")
           .style("left", event.pageX + vis.config.tooltipPadding + "px")
           .style("top", event.pageY + vis.config.tooltipPadding + "px").html(`
-         <div class="tooltip-title">${d.ID}</div>
+    
          <div><i>${d.Age}</i></div>
            <li>University study: ${d.University_Study}</li>
        `);
@@ -146,20 +154,31 @@ class DotMatrix {
     );
     legendItems.exit().remove();
 
+    // Define the number of items per row
+    const itemsPerRow = 2;
+
+    // Calculate the width and height of each item based on DOT_UNIT
+    const itemWidth = vis.config.width / itemsPerRow;
+    const itemHeight = DOT_UNIT;
+
     const legendItemsEnter = legendItems
       .enter()
       .append("g")
       .attr("class", "legend-item")
       .attr("transform", (d, i) => {
-        return `translate(${vis.config.margin.left}, ${
-          vis.config.height + i * DOT_UNIT
+        const x = (i % itemsPerRow) * itemWidth;
+        const y = Math.floor(i / itemsPerRow) * itemHeight;
+        return `translate(${x + vis.config.margin.left}, ${
+          y + vis.config.height
         })`;
       });
     legendItemsEnter
       .merge(legendItems)
       .append("circle")
       .attr("r", CIRCLE_RADIUS)
-      .attr("fill", (d) => vis.activeLegend[d]);
+      .attr("fill", (d) => vis.activeLegend[d])
+      .style("stroke", "black")
+      .style("stroke-width", 0.5);
     legendItemsEnter
       .merge(legendItems)
       .append("text")
