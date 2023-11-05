@@ -22,8 +22,8 @@ body * {
 }
 
 .matrix-area {
-    stroke:blue;
-    stroke-width: 1px;
+    /* stroke:blue;
+    stroke-width: 1px; */
     fill: transparent;
     
 }

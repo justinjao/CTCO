@@ -77,6 +77,9 @@ class DotMatrix {
       .attr("dy", ".95em")
       .text("Demographics");
 
+    vis.legendContainer = vis.svg
+      .append("g")
+      .attr("class", "dot-matrix-legend-container");
     vis.updateVis();
   }
 
@@ -107,7 +110,7 @@ class DotMatrix {
 
     const dots = vis.matrixArea.selectAll(".dots").data(vis.data, (d) => d.ID);
     const dotsEnter = dots.enter().append("circle").attr("class", "dot");
-
+    dots.exit().remove();
     dotsEnter
       .merge(dots)
       .attr("cx", (d, i) => (i % DOTS_PER_ROW) * DOT_UNIT + ROW_OFFSET) // Adjust the positioning
@@ -136,21 +139,40 @@ class DotMatrix {
         d3.select("#tooltip").style("display", "none");
         // Remove the outline when the mouse leaves
       });
+
+    const legendItems = vis.legendContainer.selectAll(".legend-item").data(
+      Object.keys(vis.activeLegend).filter((d) => d != "name"),
+      (d) => d
+    );
+    legendItems.exit().remove();
+
+    const legendItemsEnter = legendItems
+      .enter()
+      .append("g")
+      .attr("class", "legend-item")
+      .attr("transform", (d, i) => {
+        return `translate(${vis.config.margin.left}, ${
+          vis.config.height + i * DOT_UNIT
+        })`;
+      });
+    legendItemsEnter
+      .merge(legendItems)
+      .append("circle")
+      .attr("r", CIRCLE_RADIUS)
+      .attr("fill", (d) => vis.activeLegend[d]);
+    legendItemsEnter
+      .merge(legendItems)
+      .append("text")
+      .text((d) => d)
+      .attr("color", "black")
+      .attr("x", DOT_UNIT)
+      .attr("y", 5);
   }
   renderBasedOnSort(d, sort) {
     let vis = this;
     if (sort === "gender") {
       const perception = d.Self_Perception;
       return vis.activeLegend[perception];
-      //   if (perception === "Male") {
-      //     return "orange";
-      //   } else if (perception === "Female") {
-      //     return "blue";
-      //   } else if (perception === "Nonbinary") {
-      //     return "purple";
-      //   } else {
-      //     return "green";
-      //   }
     } else if (sort === "location") {
       const location = d.Location;
       return vis.activeLegend[location];
