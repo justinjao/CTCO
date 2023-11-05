@@ -17,4 +17,14 @@ d3.csv("data/2021CoderFiltered.csv").then((data) => {
     },
     filteredData
   );
+
+  /**
+   * Input field event listener
+   */
+
+  d3.select("#dot-matrix-sorting").on("change", function (event) {
+    // Get selected demographic
+    dotMatrix.activeSort = event.target.value;
+    dotMatrix.updateVis();
+  });
 });
