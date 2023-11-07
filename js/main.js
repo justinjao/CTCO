@@ -10,7 +10,6 @@ d3.csv("data/2021CoderFiltered.csv").then((data) => {
   const filteredData = data.filter(
     (d) => d.Top_Reason === "To start your first career"
   );
-  console.log("filtered data", filteredData);
   const dotMatrix = new DotMatrix(
     {
       parentElement: "#matrix",
