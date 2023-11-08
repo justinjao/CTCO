@@ -10,7 +10,7 @@ h3 {
 }
 
 .chart-container {
-    border: 1px solid black; 
+    border: 1px solid #D3D3D3; 
 
     height: 1000px;
     margin: 0 auto;
@@ -20,14 +20,14 @@ h3 {
 .top-row {
     width: 1400px;
     /* height: 750px; */
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid #D3D3D3;
     height: fit-content;
     display: flex
 }
  
 .dot-matrix-container {
     width: 60%;
-    border-right: 1px solid black;
+    border-right: 1px solid #D3D3D3;
 
 }
 
@@ -38,14 +38,6 @@ h3 {
 .matrix-area {
     fill: transparent;
     
-}
-
-.tree-area {
- fill: transparent
-}
-
-#treemap{
-
 }
 
 #dot-matrix-sorting {

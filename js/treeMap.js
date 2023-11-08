@@ -148,8 +148,7 @@ class TreeMap {
     hierarchy.sum((d) => d[1]);
     treemap(hierarchy);
 
-    // Render the rectangles based on the treemap layout
-    treemapGroup
+    const rectangles = treemapGroup
       .selectAll(".tree-nodes")
       .data(hierarchy.leaves())
       .enter()
@@ -159,6 +158,15 @@ class TreeMap {
       .attr("fill", (d) => d.data[3])
       .attr("x", (d) => d.x0)
       .attr("y", (d) => d.y0);
+
+    // Add black outline when hovering over the tree rectangles
+    rectangles
+      .on("mouseover", function () {
+        d3.select(this).attr("stroke", "black").attr("stroke-width", 2);
+      })
+      .on("mouseout", function () {
+        d3.select(this).attr("stroke", "none"); // Remove the outline on mouseout
+      });
 
     // Add labels to the rectangles
     treemapGroup
