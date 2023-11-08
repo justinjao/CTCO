@@ -3,30 +3,47 @@ body * {
     font-family: 'Poppins', sans-serif;
 }
 
-.chart-container {
-    border: 1px solid black; 
-    width: 1400px;
-    height: 1000px;
-    margin: 0 auto;
+h3 {
+    margin-top: 0;
+    padding-top: 1rem;
+    padding-left: 1rem;
 }
 
+.chart-container {
+    border: 1px solid #D3D3D3; 
+
+    height: 1000px;
+    margin: 0 auto;
+    display: flex;
+}
+
+.top-row {
+    width: 1400px;
+    /* height: 750px; */
+    border-bottom: 1px solid #D3D3D3;
+    height: fit-content;
+    display: flex
+}
  
 .dot-matrix-container {
     width: 60%;
-    border-right: 1px solid black;
+    border-right: 1px solid #D3D3D3;
 
-    border-bottom: 1px solid black;
 }
 
+.treemap-container {
+    width: 40%;
+}
 
 .matrix-area {
     fill: transparent;
     
 }
 
-#sorting-options {
+#dot-matrix-sorting {
     margin-top: 10px; 
     text-align:left; 
+    margin-left: 1rem;
   }
 
   #tooltip {
