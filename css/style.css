@@ -22,6 +22,7 @@ h3 {
     /* height: 750px; */
     border-bottom: 1px solid black;
     height: fit-content;
+    display: flex
 }
  
 .dot-matrix-container {
@@ -37,6 +38,14 @@ h3 {
 .matrix-area {
     fill: transparent;
     
+}
+
+.tree-area {
+ fill: transparent
+}
+
+#treemap{
+
 }
 
 #dot-matrix-sorting {
