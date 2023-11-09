@@ -5,7 +5,9 @@ d3.csv("data/2021CoderFiltered.csv").then((data) => {
   data.forEach((d) => {
     // preprocess data
   });
-  // temporary, to be updated
+
+  const filterDispatch = d3.dispatch("ReasonChanged");
+  // default
   const filteredData = data.filter(
     (d) => d.Top_Reason === "To start your first career"
   );
@@ -20,8 +22,17 @@ d3.csv("data/2021CoderFiltered.csv").then((data) => {
     {
       parentElement: "#treemap-vis",
     },
-    data
+    data,
+    filterDispatch
   );
+
+  filterDispatch.on("ReasonChanged", function (f, e) {
+    console.log("FILTER CHANGED ", f[0]);
+    const newFilteredData = data.filter((d) => d.Top_Reason === f[0]);
+    console.log("data filtered ", newFilteredData);
+    dotMatrix.data = newFilteredData;
+    dotMatrix.updateVis();
+  });
 
   /**
    * Input field event listener

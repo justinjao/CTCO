@@ -90,6 +90,7 @@ class DotMatrix {
   }
 
   updateVis() {
+    console.log("UPDATING", this.data);
     let vis = this;
     vis.activeLegend = vis.legendMapping.find((l) => l.name === vis.activeSort);
     if (vis.activeSort === "gender") {
@@ -114,9 +115,10 @@ class DotMatrix {
     const DOTS_PER_ROW = Math.floor(vis.config.width / DOT_UNIT);
     const ROW_OFFSET = vis.config.margin.left + CIRCLE_RADIUS;
 
-    const dots = vis.matrixArea.selectAll(".dots").data(vis.data, (d) => d.ID);
-    const dotsEnter = dots.enter().append("circle").attr("class", "dot");
+    const dots = vis.matrixArea.selectAll(".dot").data(vis.data, (d) => d.ID);
     dots.exit().remove();
+    const dotsEnter = dots.enter().append("circle").attr("class", "dot");
+
     dotsEnter
       .merge(dots)
       .attr("cx", (d, i) => (i % DOTS_PER_ROW) * DOT_UNIT + ROW_OFFSET) // Adjust the positioning

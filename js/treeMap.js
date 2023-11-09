@@ -4,7 +4,7 @@ class TreeMap {
    * @param {Object}
    */
 
-  constructor(_config, data) {
+  constructor(_config, data, filterDispatch) {
     this.config = {
       parentElement: _config.parentElement,
       containerWidth: 584,
@@ -18,7 +18,7 @@ class TreeMap {
       },
     };
     this.data = data;
-
+    this.dispatch = filterDispatch;
     this.initVis();
   }
 
@@ -166,6 +166,10 @@ class TreeMap {
       })
       .on("mouseout", function () {
         d3.select(this).attr("stroke", "none"); // Remove the outline on mouseout
+      })
+      .on("click", function (e, d) {
+        console.log("dispatch ", vis);
+        vis.dispatch.call("ReasonChanged", e, d.data);
       });
 
     // Add labels to the rectangles
@@ -184,6 +188,8 @@ class TreeMap {
       .style("dominant-baseline", "middle")
       .call(vis.wrap, 95);
   }
+
+  // TODO: add selection state
 
   // Text wrapping function
   wrap(text, width) {
