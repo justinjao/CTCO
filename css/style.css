@@ -11,10 +11,8 @@ h3 {
 
 .chart-container {
     border: 1px solid #D3D3D3; 
-
-    height: 1000px;
+    height: 1200px;
     margin: 0 auto;
-    display: flex;
 }
 
 .top-row {
