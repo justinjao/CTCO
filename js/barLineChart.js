@@ -123,7 +123,20 @@ class BarLineChart {
     // Set the scale input domains
     vis.xScale.domain(vis.aggregatedData.map(vis.xValue));
     vis.yScaleLeft.domain([0, d3.max(vis.aggregatedData, vis.yValueLeft)]);
-    vis.yScaleRight.domain(vis.careerSalaryMap.map(vis.yValueRight));
+    vis.yScaleRight.domain([
+      "$0 to $4,999",
+      "$5,000 to $9,999",
+      "$10,000 to $20,999",
+      "$20,000 to $29,999",
+      "$30,000 to $49,999",
+      "$50,000 to $74,999",
+      "$75,000 to $99,999",
+      "$100,000 to $124,999",
+      "$125,000 to $159,999",
+      "$160,000 to $199,999",
+      "$200,000 to $249,999",
+      "$250,000 or over",
+    ]);
 
     vis.renderVis();
   }
@@ -144,11 +157,13 @@ class BarLineChart {
       .attr("height", (d) => vis.height - vis.yScaleLeft(vis.yValueLeft(d)))
       .attr("y", (d) => vis.yScaleLeft(vis.yValueLeft(d)));
 
+    // Line generator
     const line = d3
       .line()
       .x((d) => vis.xScale(vis.xValue(d)) + vis.xScale.bandwidth() / 2)
       .y((d) => vis.yScaleRight(vis.yValueRight(d)));
 
+    // Add lines
     const lines = vis.chart
       .append("path")
       .attr("fill", "none")
