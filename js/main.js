@@ -39,6 +39,11 @@ d3.csv("data/2021CoderFiltered.csv").then((data) => {
     }, filteredData
   );
 
+  const barLineChart = new BarLineChart({
+      parentElement: "#bar-line-chart",
+    }, filteredData
+  );
+
   /**
    * Input field event listener
    */

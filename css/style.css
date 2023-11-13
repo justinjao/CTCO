@@ -11,12 +11,11 @@ h3 {
 
 .chart-container {
     border: 1px solid #D3D3D3; 
-    height: 1200px;
     margin: 0 auto;
 }
 
 .top-row {
-    width: 1400px;
+    /* width: 1400px; */
     /* height: 750px; */
     border-bottom: 1px solid #D3D3D3;
     height: fit-content;
@@ -36,6 +35,18 @@ h3 {
 .matrix-area {
     fill: transparent;
     
+}
+
+.bottom-row {
+  display: flex;
+}
+
+.bubble-chart-container {
+  border-right: 1px solid #D3D3D3;
+}
+
+.bar-line-chart-container {
+  border-right: 1px solid #D3D3D3;
 }
 
 #dot-matrix-sorting {
