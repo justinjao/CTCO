@@ -33,7 +33,7 @@ class BarLineChart {
     // Initialize scales
     vis.xScale = d3.scaleBand().range([0, vis.width]).padding(0.1);
     vis.yScaleLeft = d3.scaleLinear().range([vis.height, 0]);
-    vis.yScaleRight = d3.scaleLinear().range([vis.height, 0]);
+    vis.yScaleRight = d3.scaleBand().range([vis.height, 0]);
 
     // Initialize axes
     vis.xAxis = d3.axisBottom(vis.xScale);
@@ -119,7 +119,7 @@ class BarLineChart {
     vis.xValue = (d) => d.key;
     vis.yValueLeft = (d) => d.value.length;
     vis.yValueRight = (d) => d.value;
-    
+
     // Set the scale input domains
     vis.xScale.domain(vis.aggregatedData.map(vis.xValue));
     vis.yScaleLeft.domain([0, d3.max(vis.aggregatedData, vis.yValueLeft)]);
@@ -131,16 +131,31 @@ class BarLineChart {
   renderVis() {
     let vis = this;
 
+    console.log(vis.careerSalaryMap);
+
     // Add rectangles
     const bars = vis.chart
       .selectAll(".bar")
-      .data(vis.aggregatedData, vis.xValue)
+      .data(vis.aggregatedData)
       .join("rect")
       .attr("class", "bar")
       .attr("x", (d) => vis.xScale(vis.xValue(d)))
       .attr("width", vis.xScale.bandwidth())
       .attr("height", (d) => vis.height - vis.yScaleLeft(vis.yValueLeft(d)))
       .attr("y", (d) => vis.yScaleLeft(vis.yValueLeft(d)));
+
+    const line = d3
+      .line()
+      .x((d) => vis.xScale(vis.xValue(d)) + vis.xScale.bandwidth() / 2)
+      .y((d) => vis.yScaleRight(vis.yValueRight(d)));
+
+    const lines = vis.chart
+      .append("path")
+      .attr("fill", "none")
+      .attr("stroke", "currentColor")
+      .attr("stroke-miterlimit", 1)
+      .attr("stroke-width", 3)
+      .attr("d", line(vis.careerSalaryMap));
 
     // Update axes
     vis.xAxisG.call(vis.xAxis);
