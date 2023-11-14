@@ -35,8 +35,6 @@ class BubbleChart {
         .attr('width', vis.config.containerWidth)
         .attr('height', vis.config.containerHeight);
   
-      vis.chartArea = vis.svg.append("g");
-  
       // Calculate the x and y coordinates to center chartArea
       const xCenter =
         (vis.config.containerWidth -
@@ -49,25 +47,121 @@ class BubbleChart {
           vis.config.margin.bottom -
           vis.config.height) / 2;
 
-      vis.chartArea
-        .append("rect")
-        .attr("width", vis.config.width)
-        .attr("height", vis.config.height)
-        .attr("class", "bubble-area")
-        .attr("x", vis.config.margin.left + xCenter)
-        .attr("y", vis.config.margin.top + yCenter);
-  
+      vis.chartArea = vis.svg.append('g')
+        .attr('class', "bubble-area")
+        .attr('transform', `translate(${vis.config.margin.left + xCenter},${vis.config.margin.top + yCenter})`);
+
+      // Define scales
+      vis.radiusScale = d3.scaleSqrt()
+        .range([5, 50]);
+
       vis.updateVis();
     }
   
     updateVis() {
       let vis = this;
 
+      // data processing: split each st in keyword list to their 
+      // individual items and counts
+      
+      vis.transformedData = [];
+
+      vis.keywords = [
+        {"Helpful_Online_Resources": [
+        'freeCodeCamp', 'Mozilla Developer Network (MDN)', 'EdX', 'Codecademy', 'Udemy',
+        'Code Wars', 'Front End Masters', 'Lynda.com', 'CSS Tricks', 'Coursera', 'Khan Academy',
+        'Pluralsight', 'HackerRank', 'Stack Overflow', 'W3Schools']
+        }, 
+        {"Helpful_Podcasts": [
+          'Code Newbie Podcast', 'Darknet Diaries', 'Syntax.fm', 'Learn To Code With Me', 
+          'Talk Python to Me', 'Cyberwire Daily', 'The Changelog', 'Indie Hackers', 'Developer Tea',
+          'JS PARTY', 'Ladybug Podcast', 'Software Engineering Daily', 'Practical AI']
+        }, 
+        {"Helpful_YouTube_Channels": [
+        'Ben Awad', 'Code with Ania Kubów', 'CodeStacker', 'Coding Train',
+        'Dev Ed', 'freeCodeCamp', 'Google Developers', 'James Q Quick',
+        'Kevin Powell', 'The Net Ninja', 'Traversy Media', 'CS Dojo',
+        'Programming With Mosh', 'Fireship', 'Coding Addict', 'DesignCourse']
+        },
+        {"Helpful_In_Person_Events": [
+          'workshops', 'hackathons', 'freeCodeCamp study groups', 
+          'conferences', 'weekend bootcamps', 'Women Who Code', 'Meetup.com events', 'school']
+        }
+      ];
+      
+      // count of each item in each category
+      vis.keywords.forEach((keywordDict) => {
+        let keyRes = {};
+        const key = Object.keys(keywordDict)[0]
+        let keywordList = keywordDict[key]
+        vis.data.forEach((d) => {
+          const increaseCnt =  function(item) {
+            if (keywordList.includes(item)){
+              if (keyRes[item]){
+                keyRes[item] += 1;
+              } else {
+                keyRes[item] = 1;
+              }
+            }
+          }
+          if (key !== "Helpful_In_Person_Events"){
+            d[key].forEach((item) => {
+              increaseCnt(item);
+            })
+          } else {
+            increaseCnt(d[key]);
+          }
+        });
+        const keyResObj = Object.entries(keyRes).map(([name, count]) => ({
+          category: key,
+          name: name,
+          count: count
+        }));
+        vis.transformedData = [...vis.transformedData, ...keyResObj];
+      })
+
+      vis.transformedData = vis.transformedData.sort((a,b) => b.count - a.count);
+
+      vis.radiusScale.domain([0, vis.transformedData[0].count]);
+
+      vis.transformedData.forEach(function (d) {
+        d.radius = vis.radiusScale(d.count);
+      });
+
       vis.renderVis();
     }
   
     renderVis() {
       let vis = this;
+
+      // force simulations to make nodes repel but close to each other
+      let simulation = d3.forceSimulation(vis.transformedData)
+        .force("charge", d3.forceManyBody().strength([-40]))
+        .force("x", d3.forceX(vis.config.width / 2).strength(0.05))
+        .force("y", d3.forceY(vis.config.height / 2).strength(0.05))
+        .force("collide", d3.forceCollide().radius(function (d) { return d.radius + 2; }));
+
+      const circle = vis.chartArea.selectAll(".circle")
+        .data(vis.transformedData);
+
+      const circlesEnter = circle
+        .enter()
+        .append('circle')
+        .attr('class', 'circle');
+        
+      simulation.on("tick", function () {
+        circlesEnter
+          .attr("cx", d => d.x)
+          .attr("cy", d => d.y);
+      });
+      
+      const circlesMerge = circlesEnter.merge(circle)
+        .attr('r', d => d.radius)
+        .attr('fill', '#aeaeca');
+      
+      circle.exit().remove()
+    
     }
+
 }
   

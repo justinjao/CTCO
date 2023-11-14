@@ -4,6 +4,10 @@
 d3.csv("data/2021CoderFiltered.csv").then((data) => {
   data.forEach((d) => {
     // preprocess data
+    d.Learning_Methods = d.Learning_Methods.split(", ");
+    d.Helpful_Online_Resources = d.Helpful_Online_Resources.split(", ");
+    d.Helpful_Podcasts = d.Helpful_Podcasts.split(", ");
+    d.Helpful_YouTube_Channels = d.Helpful_YouTube_Channels.split(", ");
   });
 
   const filterDispatch = d3.dispatch("ReasonChanged");
@@ -36,7 +40,7 @@ d3.csv("data/2021CoderFiltered.csv").then((data) => {
 
   const bubbleChart = new BubbleChart({
       parentElement: "#bubble-chart",
-    }, filteredData
+    }, data
   );
 
   const barLineChart = new BarLineChart({
