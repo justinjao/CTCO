@@ -4,6 +4,8 @@ class DotMatrix {
    * @param {Object}
    */
 
+  // TODO: add major as a filter choice
+
   constructor(_config, data) {
     this.config = {
       parentElement: _config.parentElement,
