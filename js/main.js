@@ -34,6 +34,16 @@ d3.csv("data/2021CoderFiltered.csv").then((data) => {
     dotMatrix.updateVis();
   });
 
+  const bubbleChart = new BubbleChart({
+      parentElement: "#bubble-chart",
+    }, filteredData
+  );
+
+  const barLineChart = new BarLineChart({
+      parentElement: "#bar-line-chart",
+    }, filteredData
+  );
+
   /**
    * Input field event listener
    */
