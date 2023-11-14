@@ -51,6 +51,30 @@ class DotMatrix {
         "Southeast Asia": "#b3de69",
         "Sub-Saharan Africa": "#fccde5",
       },
+      {
+        name: "university-study",
+        "Information systems, information technology, or system administration":
+          "#8dd3c7",
+        "Computer science, computer engineering, software engineering or data science":
+          "#ffffb3",
+        "Fine arts or performing arts (e.g., graphic design, music, studio, art)":
+          "#bebada",
+        "A social science (e.g., sociology, psychology, political science, economics)":
+          "#fb8072",
+        "Another engineering discipline (e.g., civil, electrical, mechanical)":
+          "#80b1d3",
+        "A natural science (e.g., biology, chemistry, physics)": "#fdb462",
+        "Undecided or no major": "#b3de69",
+        "I didn't attend a university": "#fccde5",
+        "A business discipline (e.g., accounting, finance, marketing)":
+          "#1f78b4",
+        "A health science (e.g., nursing, pharmacy, radiology)": "#fb9a99",
+        "A humanities discipline (e.g., literature, history, philosophy)":
+          "#e31a1c",
+        "Environmental science (e.g., earth sciences, sustainability)":
+          "#fdbf6f",
+        "Mathematics or statistics": "#ff7f00",
+      },
     ];
     this.initVis();
   }
@@ -109,6 +133,31 @@ class DotMatrix {
   }
 
   renderVis() {
+    const university_mapping = {
+      "Information systems, information technology, or system administration":
+        "IT/Systems",
+      "Computer science, computer engineering, software engineering or data science":
+        "Computer Science/Data Science",
+      "Fine arts or performing arts (e.g., graphic design, music, studio, art)":
+        "Fine/Performing Arts",
+      "A social science (e.g., sociology, psychology, political science, economics)":
+        "Social Science",
+      "Another engineering discipline (e.g., civil, electrical, mechanical)":
+        "Other Engineering",
+      "A natural science (e.g., biology, chemistry, physics)":
+        "Natural Science",
+      "Undecided or no major": "Undecided/No Major",
+      "I didn't attend a university": "No University Attendance",
+      "A business discipline (e.g., accounting, finance, marketing)":
+        "Business",
+      "A health science (e.g., nursing, pharmacy, radiology)": "Health Science",
+      "A humanities discipline (e.g., literature, history, philosophy)":
+        "Humanities",
+      "Environmental science (e.g., earth sciences, sustainability)":
+        "Environmental Science",
+      "Mathematics or statistics": "Math/Statistics",
+    };
+
     let vis = this;
     const CIRCLE_RADIUS = 6;
     const CIRCLE_DIAM = 2 * CIRCLE_RADIUS;
@@ -177,7 +226,7 @@ class DotMatrix {
         const x = (i % itemsPerRow) * itemWidth;
         const y = Math.floor(i / itemsPerRow) * itemHeight;
         return `translate(${x + vis.config.margin.left}, ${
-          y + vis.config.height
+          y + vis.config.height - 20
         })`;
       });
     legendItemsEnter
@@ -190,7 +239,10 @@ class DotMatrix {
     legendItemsEnter
       .merge(legendItems)
       .append("text")
-      .text((d) => d)
+      .text((d) => {
+        // Use the shortened names only for "university study"
+        return university_mapping.hasOwnProperty(d) ? university_mapping[d] : d;
+      })
       .attr("color", "black")
       .attr("x", DOT_UNIT)
       .attr("y", 5);
@@ -203,6 +255,9 @@ class DotMatrix {
     } else if (sort === "location") {
       const location = d.Location;
       return vis.activeLegend[location];
+    } else if (sort === "university-study") {
+      const university_study = d.University_Study;
+      return vis.activeLegend[university_study];
     } else {
       const age = d.Age;
       return vis.activeLegend[age];
