@@ -23,35 +23,25 @@ class BubbleChart {
   
     initVis() {
         
-        let vis = this;
+      let vis = this;
 
-        // Calculate inner chart size. Margin specifies the space around the actual chart.
-        vis.config.width = vis.config.containerWidth - vis.config.margin.left - vis.config.margin.right;
-        vis.config.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom;
+      // Calculate inner chart size. Margin specifies the space around the actual chart.
+      vis.config.width = vis.config.containerWidth - vis.config.margin.left - vis.config.margin.right;
+      vis.config.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom;
 
-        // Define size of SVG drawing area
-        vis.svg = d3.select(vis.config.parentElement).append('svg')
+      // Define size of SVG drawing area
+      vis.svg = d3.select(vis.config.parentElement)
+        .append('svg')
         .attr('id', 'bubble-chart')
         .attr('width', vis.config.containerWidth)
         .attr('height', vis.config.containerHeight);
-  
-      // Calculate the x and y coordinates to center chartArea
-      const xCenter =
-        (vis.config.containerWidth -
-          vis.config.margin.left -
-          vis.config.margin.right -
-          vis.config.width) / 2;
-      const yCenter =
-        (vis.config.containerHeight -
-          vis.config.margin.top -
-          vis.config.margin.bottom -
-          vis.config.height) / 2;
 
+      // SVG group that contains the chart (adjusted to margins)
       vis.chartArea = vis.svg.append('g')
         .attr('class', "bubble-area")
-        .attr('transform', `translate(${vis.config.margin.left + xCenter},${vis.config.margin.top + yCenter})`);
+        .attr('transform', `translate(${vis.config.margin.left},${vis.config.margin.top})`);
 
-      // Define scales
+      // Define radius scale of circles
       vis.radiusScale = d3.scaleSqrt()
         .range([5, 50]);
 
@@ -61,8 +51,7 @@ class BubbleChart {
     updateVis() {
       let vis = this;
 
-      // data processing: split each st in keyword list to their 
-      // individual items and counts
+      // Data processing: split each str, check if in keyword list, record its counts
       
       vis.transformedData = [];
 
@@ -89,7 +78,7 @@ class BubbleChart {
         }
       ];
       
-      // count of each item in each category
+      // If item in keyword list, group it and increase count
       vis.keywords.forEach((keywordDict) => {
         let keyRes = {};
         const key = Object.keys(keywordDict)[0]
@@ -104,6 +93,7 @@ class BubbleChart {
               }
             }
           }
+          // Cater Helpful_In_Person_Events' difference in format
           if (key !== "Helpful_In_Person_Events"){
             d[key].forEach((item) => {
               increaseCnt(item);
@@ -112,16 +102,20 @@ class BubbleChart {
             increaseCnt(d[key]);
           }
         });
+        // Convert result so each item is its own object
         const keyResObj = Object.entries(keyRes).map(([name, count]) => ({
           category: key,
           name: name,
           count: count
         }));
+        // Concat all item objects to the result array
         vis.transformedData = [...vis.transformedData, ...keyResObj];
       })
 
+      // Sort objects by descending order (highest count -> lowest count)
       vis.transformedData = vis.transformedData.sort((a,b) => b.count - a.count);
 
+      // Assign radius to each data point based on its count
       vis.radiusScale.domain([0, vis.transformedData[0].count]);
 
       vis.transformedData.forEach(function (d) {
@@ -134,32 +128,28 @@ class BubbleChart {
     renderVis() {
       let vis = this;
 
-      // force simulations to make nodes repel but close to each other
+      // Force simulations to make circle data points repel but close to each other
       let simulation = d3.forceSimulation(vis.transformedData)
         .force("charge", d3.forceManyBody().strength([-40]))
         .force("x", d3.forceX(vis.config.width / 2).strength(0.05))
         .force("y", d3.forceY(vis.config.height / 2).strength(0.05))
         .force("collide", d3.forceCollide().radius(function (d) { return d.radius + 2; }));
-
-      const circle = vis.chartArea.selectAll(".circle")
-        .data(vis.transformedData);
-
-      const circlesEnter = circle
-        .enter()
-        .append('circle')
-        .attr('class', 'circle');
-        
-      simulation.on("tick", function () {
-        circlesEnter
-          .attr("cx", d => d.x)
-          .attr("cy", d => d.y);
-      });
       
-      const circlesMerge = circlesEnter.merge(circle)
+      // Rendering the circle data points
+      const circle = vis.chartArea
+        .selectAll(".circle")
+        .data(vis.transformedData)
+        .join('circle')
+        .attr('class', 'circle')
         .attr('r', d => d.radius)
         .attr('fill', '#aeaeca');
       
-      circle.exit().remove()
+      // Using simulation, generate each circle data point's x and y pos
+      simulation.on("tick", function () {
+        circle
+          .attr("cx", d => d.x)
+          .attr("cy", d => d.y);
+      });
     
     }
 
