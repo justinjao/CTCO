@@ -41,9 +41,42 @@ class BubbleChart {
         .attr('class', "bubble-area")
         .attr('transform', `translate(${vis.config.margin.left},${vis.config.margin.top})`);
 
-      // Define radius scale of circles
+      // Initialize radius scale of circles
       vis.radiusScale = d3.scaleSqrt()
         .range([5, 50]);
+      
+      // Initialize categorical color scale
+      const legendData = ['Helpful_Online_Resources','Helpful_Podcasts','Helpful_YouTube_Channels', 'Helpful_In_Person_Events'];
+      vis.colorScale = d3.scaleOrdinal()
+        .range(['#e5d8bd', '#fed9a6', '#f3e5ab', '#ccebc5'])
+        .domain(legendData);
+
+      // Initialize legend
+      vis.legendArea = vis.svg
+        .append('g')
+        .attr('class', 'legendArea')
+        .attr('transform', `translate(16,0)`);
+      
+      vis.legend = vis.legendArea
+        .selectAll(".legend")
+        .data(legendData)
+        .enter()
+        .append('g')
+        .attr('class', 'legend')
+        .attr("transform", (d, i) => `translate(0,${i * 20})`);
+
+      vis.legend
+        .append("rect")
+        .attr("width", 18)
+        .attr("height", 18)
+        .style("fill", d => vis.colorScale(d));
+      
+      vis.legend
+        .append("text")
+        .attr("x", 40)
+        .attr("y", 9)
+        .style("text-anchor", "start")
+        .text(d => d.replace(/_/g, ' '));
 
       vis.updateVis();
     }
@@ -130,7 +163,7 @@ class BubbleChart {
 
       // Force simulations to make circle data points repel but close to each other
       let simulation = d3.forceSimulation(vis.transformedData)
-        .force("charge", d3.forceManyBody().strength([-40]))
+        .force("charge", d3.forceManyBody().strength([-30]))
         .force("x", d3.forceX(vis.config.width / 2).strength(0.05))
         .force("y", d3.forceY(vis.config.height / 2).strength(0.05))
         .force("collide", d3.forceCollide().radius(function (d) { return d.radius + 2; }));
@@ -142,7 +175,7 @@ class BubbleChart {
         .join('circle')
         .attr('class', 'circle')
         .attr('r', d => d.radius)
-        .attr('fill', '#aeaeca');
+        .attr('fill', d => vis.colorScale(d.category));
       
       // Using simulation, generate each circle data point's x and y pos
       simulation.on("tick", function () {
