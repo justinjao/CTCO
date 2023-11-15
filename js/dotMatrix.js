@@ -316,10 +316,7 @@ class DotMatrix {
     legendItemsEnter
       .merge(legendItems)
       .append("text")
-      .text((d) => {
-        // Use the shortened names only for "university study"
-        return university_mapping.hasOwnProperty(d) ? university_mapping[d] : d;
-      })
+      .text((d) => d)
       .attr("color", "black")
       .attr("x", DOT_UNIT)
       .attr("y", 5);
