@@ -1,3 +1,29 @@
+const AGGREGATED_CATEGORY_LOOKUP = {
+  Science: [
+    "A social science (e.g., sociology, psychology, political science, economics)",
+    "A natural science (e.g., biology, chemistry, physics)",
+    "A health science (e.g., nursing, pharmacy, radiology)",
+    "Environmental science (e.g., earth sciences, sustainability)",
+  ],
+  Humanities: [
+    "A humanities discipline (e.g., literature, history, philosophy)",
+    "Education",
+  ],
+  "Information Technology": [
+    "Information systems, information technology, or system administration",
+    "Computer science, computer engineering, software engineering or data science",
+  ],
+  Math: ["Mathematics or statistics"],
+  Arts: [
+    "Fine arts or performing arts (e.g., graphic design, music, studio, art)",
+  ],
+  Business: ["A business discipline (e.g., accounting, finance, marketing)"],
+  Engineering: [
+    "Another engineering discipline (e.g., civil, electrical, mechanical)",
+  ],
+  Other: ["I didn't attend a university", "Undecided or no major"],
+};
+
 class DotMatrix {
   /**
    * Class constructor with initial configuration
@@ -53,28 +79,49 @@ class DotMatrix {
       },
       {
         name: "university-study",
-        "Information systems, information technology, or system administration":
-          "#8dd3c7",
-        "Computer science, computer engineering, software engineering or data science":
-          "#ffffb3",
-        "Fine arts or performing arts (e.g., graphic design, music, studio, art)":
-          "#bebada",
-        "A social science (e.g., sociology, psychology, political science, economics)":
-          "#fb8072",
-        "Another engineering discipline (e.g., civil, electrical, mechanical)":
-          "#80b1d3",
-        "A natural science (e.g., biology, chemistry, physics)": "#fdb462",
-        "Undecided or no major": "#b3de69",
-        "I didn't attend a university": "#fccde5",
-        "A business discipline (e.g., accounting, finance, marketing)":
-          "#1f78b4",
-        "A health science (e.g., nursing, pharmacy, radiology)": "#fb9a99",
-        "A humanities discipline (e.g., literature, history, philosophy)":
-          "#e31a1c",
-        "Environmental science (e.g., earth sciences, sustainability)":
-          "#fdbf6f",
-        "Mathematics or statistics": "#ff7f00",
+        Science: "#8dd3c7",
+        Humanities: "#ffffb3",
+        "Information Technology": "#bebada",
+        Math: "#fb8072",
+        Arts: "#80b1d3",
+        Business: "#fdb462",
+        Engineering: "#b3de69",
+        Other: "#fccde5",
       },
+      //   {
+      //     name: "university-study",
+      //     "IT/Engineering": "#8dd3c7",
+      //     Arts: "#ffffb3",
+      //     "Social Sciences": "#bebada",
+      //     "Natural Sciences": "#fb8072",
+      //     "Business/Health/Humanities": "#80b1d3",
+      //     "Math/Statistics": "#fdb462",
+      //     Other: "#b3de69",
+      //   },
+      //   {
+      //     name: "university-study",
+      //     "Information systems, information technology, or system administration":
+      //       "#8dd3c7",
+      //     "Computer science, computer engineering, software engineering or data science":
+      //       "#ffffb3",
+      //     "Fine arts or performing arts (e.g., graphic design, music, studio, art)":
+      //       "#bebada",
+      //     "A social science (e.g., sociology, psychology, political science, economics)":
+      //       "#fb8072",
+      //     "Another engineering discipline (e.g., civil, electrical, mechanical)":
+      //       "#80b1d3",
+      //     "A natural science (e.g., biology, chemistry, physics)": "#fdb462",
+      //     "Undecided or no major": "#b3de69",
+      //     "I didn't attend a university": "#fccde5",
+      //     "A business discipline (e.g., accounting, finance, marketing)":
+      //       "#1f78b4",
+      //     "A health science (e.g., nursing, pharmacy, radiology)": "#fb9a99",
+      //     "A humanities discipline (e.g., literature, history, philosophy)":
+      //       "#e31a1c",
+      //     "Environmental science (e.g., earth sciences, sustainability)":
+      //       "#fdbf6f",
+      //     "Mathematics or statistics": "#ff7f00",
+      //   },
     ];
     this.initVis();
   }
@@ -125,6 +172,10 @@ class DotMatrix {
       );
     } else if (vis.activeSort === "location") {
       vis.data = vis.data.sort((a, b) => a.Location.localeCompare(b.Location));
+    } else if (vis.activeSort === "university-study") {
+      vis.data = vis.data.sort((a, b) =>
+        vis.findAggregateName(a).localeCompare(vis.findAggregateName(b))
+      );
     } else {
       vis.data = vis.data.sort((a, b) => a.Age.localeCompare(b.Age));
     }
@@ -158,6 +209,32 @@ class DotMatrix {
       "Mathematics or statistics": "Math/Statistics",
     };
 
+    // const aggregatedCategories = {
+    //   "IT/Engineering": [
+    //     "Information systems, information technology, or system administration",
+    //     "Computer science, computer engineering, software engineering or data science",
+    //     "Another engineering discipline (e.g., civil, electrical, mechanical)",
+    //   ],
+    //   Arts: [
+    //     "Fine arts or performing arts (e.g., graphic design, music, studio, art)",
+    //   ],
+    //   "Social Sciences": [
+    //     "A social science (e.g., sociology, psychology, political science, economics)",
+    //     "Education",
+    //   ],
+    //   "Natural Sciences": [
+    //     "A natural science (e.g., biology, chemistry, physics)",
+    //     "Environmental science (e.g., earth sciences, sustainability)",
+    //   ],
+    //   Other: ["Undecided or no major", "I didn't attend a university"],
+    //   "Business/Health/Humanities": [
+    //     "A business discipline (e.g., accounting, finance, marketing)",
+    //     "A health science (e.g., nursing, pharmacy, radiology)",
+    //     "A humanities discipline (e.g., literature, history, philosophy)",
+    //   ],
+    //   "Math/Statistics": ["Mathematics or statistics"],
+    // };
+
     let vis = this;
     const CIRCLE_RADIUS = 6;
     const CIRCLE_DIAM = 2 * CIRCLE_RADIUS;
@@ -172,7 +249,7 @@ class DotMatrix {
 
     dotsEnter
       .merge(dots)
-      .attr("cx", (d, i) => (i % DOTS_PER_ROW) * DOT_UNIT + ROW_OFFSET) // Adjust the positioning
+      .attr("cx", (d, i) => (i % DOTS_PER_ROW) * DOT_UNIT + ROW_OFFSET)
       .attr("cy", (d, i) => {
         return (
           Math.floor(i / DOTS_PER_ROW) * DOT_UNIT +
@@ -226,7 +303,7 @@ class DotMatrix {
         const x = (i % itemsPerRow) * itemWidth;
         const y = Math.floor(i / itemsPerRow) * itemHeight;
         return `translate(${x + vis.config.margin.left}, ${
-          y + vis.config.height - 20
+          y + vis.config.height
         })`;
       });
     legendItemsEnter
@@ -247,6 +324,7 @@ class DotMatrix {
       .attr("x", DOT_UNIT)
       .attr("y", 5);
   }
+
   renderBasedOnSort(d, sort) {
     let vis = this;
     if (sort === "gender") {
@@ -256,11 +334,21 @@ class DotMatrix {
       const location = d.Location;
       return vis.activeLegend[location];
     } else if (sort === "university-study") {
-      const university_study = d.University_Study;
-      return vis.activeLegend[university_study];
+      return vis.activeLegend[vis.findAggregateName(d)];
     } else {
       const age = d.Age;
       return vis.activeLegend[age];
     }
+  }
+  findAggregateName(d) {
+    let vis = this;
+
+    const names = Object.keys(AGGREGATED_CATEGORY_LOOKUP);
+    for (let i = 0; i < names.length; i++) {
+      if (AGGREGATED_CATEGORY_LOOKUP[names[i]].includes(d.University_Study)) {
+        return names[i];
+      }
+    }
+    return "invalid";
   }
 }
