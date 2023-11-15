@@ -1,61 +1,84 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>Coding Odyssey </title>
-    <meta charset="UTF-8">
-    <link rel="icon" href="data:;base64,iVBORwOKGO=" />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
+  <title>Coding Odyssey </title>
+  <meta charset="UTF-8">
+  <link rel="icon" href="data:;base64,iVBORwOKGO=" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
 </head>
-<body>    
-    <h1>Cracking the Coding Odyssey</h1>
-    <!-- Add HTML content, SVG drawing area, ... -->
-    <div class="chart-container">
-        <div class="top-row">
+
+<body>
+  <h1>Cracking the Coding Odyssey</h1>
+  <!-- Add HTML content, SVG drawing area, ... -->
+  <div class="chart-container">
+    <div class="top-row">
 
 
-            <div class="dot-matrix-container">
-               <h3>Demographics</h3>
-                 <!--test smiley face 
+      <div class="dot-matrix-container">
+        <h3>Demographics</h3>
+        <!--test smiley face 
                                <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100" fill="none">-->
 
-                <circle cx="50" cy="50" r="30" fill="#FFD700" /> <!-- Head -->
-                <circle cx="38" cy="40" r="4" fill="black" /> <!-- Left Eye -->
-                <circle cx="62" cy="40" r="4" fill="black" /> <!-- Right Eye -->
-                <path d="M45 55 Q 50 70 55 55" stroke="black" stroke-width="2" fill="transparent" /> <!-- Smile -->
-              </svg>
-                <div id="dot-matrix-sorting">
-                    <label>
-                      <input type="radio" name="sort-option" value="location"> Location
-                    </label>
-                    <label>
-                      <input type="radio" name="sort-option" value="gender" checked> Gender
-                    </label>
-                    <label>
-                      <input type="radio" name="sort-option" value="age"> Age
-                    </label>
-                  </div>
-                  <div id="matrix">
-                  </div>
-            </div>
-            <div class="treemap-container"><h3>Motivations</h3><div id="treemap-vis"></div></div>
+        <circle cx="50" cy="50" r="30" fill="#FFD700" /> <!-- Head -->
+        <circle cx="38" cy="40" r="4" fill="black" /> <!-- Left Eye -->
+        <circle cx="62" cy="40" r="4" fill="black" /> <!-- Right Eye -->
+        <path d="M45 55 Q 50 70 55 55" stroke="black" stroke-width="2" fill="transparent" /> <!-- Smile -->
+        </svg>
+        <div id="dot-matrix-sorting">
+          <label>
+            <input type="radio" name="sort-option" value="location"> Location
+          </label>
+          <label>
+            <input type="radio" name="sort-option" value="gender" checked> Gender
+          </label>
+          <label>
+            <input type="radio" name="sort-option" value="age"> Age
+          </label>
         </div>
-        <div class="bottom-row">
-          <div class="bubble-chart-container"><h3>Learning Resources</h3><div id="bubble-chart"></div></div>
-          <div class="bar-line-chart-container"><h3>Career Aspirations</h3><svg id="bar-line-chart"></svg></div>
+        <div id="matrix">
         </div>
+      </div>
+      <div class="treemap-container">
+        <h3>Motivations</h3>
+        <div id="treemap-vis"></div>
+      </div>
     </div>
- 
+    <div class="bottom-row">
+      <div class="bubble-chart-container">
+        <h3>Learning Resources</h3>
+        <div id="bubble-chart"></div>
+      </div>
+      <div class="sankey-chart-container">
+        <h3>Cost of Learning</h3>
+        <div id="sankey-chart"></div>
+      </div>
+      <div class="bar-line-chart-container">
+        <h3>Career Aspirations</h3><svg id="bar-line-chart"></svg>
+      </div>
+    </div>
+
     <div id="tooltip"></div>
     <!-- D3 bundle -->
     <script src="js/d3.v6.min.js"></script>
+
+    <!-- D3 sankey plugins -->
+    <script src="https://unpkg.com/d3-array@1"></script>
+    <script src="https://unpkg.com/d3-collection@1"></script>
+    <script src="https://unpkg.com/d3-path@1"></script>
+    <script src="https://unpkg.com/d3-shape@1"></script>
+    <script src="https://unpkg.com/d3-sankey@0"></script>
+
 
     <!-- Our JS code -->
     <script src="js/dotMatrix.js"></script>
     <script src="js/treeMap.js"></script>
     <script src="js/bubbleChart.js"></script>
     <script src="js/barLineChart.js"></script>
+    <script src="js/sankeyChart.js"></script>
     <script src="js/main.js"></script>
 
 </body>
+
 </html>
