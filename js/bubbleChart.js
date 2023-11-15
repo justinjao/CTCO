@@ -39,11 +39,11 @@ class BubbleChart {
       // SVG group that contains the chart (adjusted to margins)
       vis.chartArea = vis.svg.append('g')
         .attr('class', "bubble-area")
-        .attr('transform', `translate(${vis.config.margin.left},${vis.config.margin.top})`);
+        .attr('transform', `translate(${vis.config.margin.left},${vis.config.margin.top + 20})`);
 
       // Initialize radius scale of circles
       vis.radiusScale = d3.scaleSqrt()
-        .range([5, 50]);
+        .range([5, 70]);
       
       // Initialize categorical color scale
       const legendData = ['Helpful_Online_Resources','Helpful_Podcasts','Helpful_YouTube_Channels', 'Helpful_In_Person_Events'];
@@ -163,11 +163,11 @@ class BubbleChart {
 
       // Force simulations to make circle data points repel but close to each other
       let simulation = d3.forceSimulation(vis.transformedData)
-        .force("charge", d3.forceManyBody().strength([-30]))
+        .force("charge", d3.forceManyBody().strength([-50]))
         .force("x", d3.forceX(vis.config.width / 2).strength(0.05))
         .force("y", d3.forceY(vis.config.height / 2).strength(0.05))
         .force("collide", d3.forceCollide().radius(function (d) { return d.radius + 2; }));
-      
+
       // Rendering the circle data points
       const circle = vis.chartArea
         .selectAll(".circle")
@@ -175,14 +175,66 @@ class BubbleChart {
         .join('circle')
         .attr('class', 'circle')
         .attr('r', d => d.radius)
-        .attr('fill', d => vis.colorScale(d.category));
+        .attr('fill', d => vis.colorScale(d.category))
+        .on('mouseover', function(event,d) {
+          d3.select(this)
+            .attr("stroke", "#000000")
+            .attr("stroke-width", "2");
+          d3.select('#tooltip')
+            .style('display', 'block')
+            .html(`
+            <div class="bold">${d.name}</div>
+            <div>${d.count}</div>
+            `)
+            .style('left', (event.pageX + vis.config.tooltipPadding) + 'px')
+            .style('top', (event.pageY + vis.config.tooltipPadding) + 'px');
+          
+        })      
+        .on('mouseleave', function() {
+          d3.select(this)
+            .attr("stroke", null)
+            .attr("stroke-width", null);
+          d3.select('#tooltip').style('display', 'none');
+        });
+
+
+      // Render text on the circle
+      const circleLabel = vis.chartArea
+        .selectAll(".circle-label")
+        .data(vis.transformedData.filter(d => d.count > 30))
+        .join('text')
+        .attr('class', 'circle-label')
+        .attr('text-anchor', 'middle')
+        .attr('fill', "#7f7a7a")
+        .attr('font-size', 10)
+        .text(d => d.name);
       
       // Using simulation, generate each circle data point's x and y pos
       simulation.on("tick", function () {
         circle
           .attr("cx", d => d.x)
           .attr("cy", d => d.y);
+
+        circleLabel
+          .attr("x", d => d.x)
+          .attr("y", d => d.y)
+          // only show labels that fit the size of circle
+
       });
+
+      // remove labels that exceed size of circle
+      circleLabel.style("visibility", function (d) {
+        let labelLen = d3.select(this).node().getComputedTextLength();
+        let diameter = d.radius * 2;
+        if (labelLen <= diameter){
+          return "visible";
+        } else {
+          d3.select(this).remove();
+        }
+      });
+
+      // Todo: when click on legend, just show circles of that colour 
+      // Todo: Interactivity with motivations map: filters the dataset to only contain that
     
     }
 
