@@ -40,7 +40,7 @@ d3.csv("data/2021CoderFiltered.csv").then((data) => {
 
   const bubbleChart = new BubbleChart({
       parentElement: "#bubble-chart",
-    }, data
+    }, filteredData
   );
 
   const barLineChart = new BarLineChart({
