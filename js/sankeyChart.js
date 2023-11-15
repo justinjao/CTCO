@@ -7,8 +7,8 @@ class SankeyChart {
     constructor(_config, data) {
         this.config = {
             parentElement: _config.parentElement,
-            containerWidth: 800,
-            containerHeight: 500,
+            containerWidth: 928,
+            containerHeight: 600,
             tooltipPadding: 15,
             margin: {
                 top: 50,
@@ -48,7 +48,7 @@ class SankeyChart {
             .nodeAlign(d3.sankeyLeft)
             .nodeWidth(15)
             .nodePadding(10)
-            .extent([[1, 5], [vis.config.containerWidth - 1, vis.config.containerHeight - 5]]);
+            .extent([[1, 5], [vis.config.width - 1, vis.config.height - 5]]);
 
         console.log("SANKEY")
         console.log(vis.data)
@@ -85,7 +85,7 @@ class SankeyChart {
 
         // Creates the paths that represent the links.
         const link = vis.svg.append("g")
-            .attr("fill", "#FFFFE0,")
+            .attr("fill", "#e9edf5")
             .attr("stroke-opacity", 0.5)
             .selectAll()
             .data(links)
@@ -93,19 +93,22 @@ class SankeyChart {
             .style("mix-blend-mode", "multiply");
 
         link.append("path")
+            // .attr("fill", "none")
             .attr("d", d3.sankeyLinkHorizontal())
             .attr("stroke", "static")
             .attr("stroke-width", d => Math.max(1, d.width));
 
+        console.log("NODES")
+        console.log(nodes)
         // Adds labels on the nodes.
         vis.svg.append("g")
             .selectAll()
             .data(nodes)
             .join("text")
-            .attr("x", d => d.x0 < vis.containerWidth / 2 ? d.x1 + 6 : d.x0 - 6)
+            .attr("x", d => d.x0 < vis.config.width / 2 ? d.x1 + 6 : d.x0 - 6)
             .attr("y", d => (d.y1 + d.y0) / 2)
             .attr("dy", "0.35em")
-            .attr("text-anchor", d => d.x0 < vis.containerWidth / 2 ? "start" : "end")
+            .attr("text-anchor", d => d.x0 < vis.config.width / 2 ? "start" : "end")
             .text(d => d.name);
 
     }
