@@ -18,7 +18,8 @@ class SankeyChart {
             },
         };
         this.data = data;
-
+        console.log("GRAPH")
+        console.log(data)
         this.initVis()
     }
 
@@ -38,9 +39,9 @@ class SankeyChart {
         vis.svg = d3
             .select(vis.config.parentElement)
             .append("svg")
-            .attr("id", "dot-matrix")
-            .attr("width", vis.config.containerWidth)
-            .attr("height", vis.config.containerHeight);
+            .attr("id", "sankey")
+            .attr("width", vis.config.width)
+            .attr("height", vis.config.height);
 
         // Constructs and configures a Sankey generator.
         const sankey = d3.sankey()
@@ -85,7 +86,7 @@ class SankeyChart {
 
         // Creates the paths that represent the links.
         const link = vis.svg.append("g")
-            .attr("fill", "#e9edf5")
+            .attr("fill", "#e9edf5")  // 
             .attr("stroke-opacity", 0.5)
             .selectAll()
             .data(links)
@@ -93,9 +94,8 @@ class SankeyChart {
             .style("mix-blend-mode", "multiply");
 
         link.append("path")
-            // .attr("fill", "none")
             .attr("d", d3.sankeyLinkHorizontal())
-            .attr("stroke", "static")
+            .attr("stroke", "#e9edf5")
             .attr("stroke-width", d => Math.max(1, d.width));
 
         console.log("NODES")
