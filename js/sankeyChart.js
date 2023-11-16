@@ -18,14 +18,64 @@ class SankeyChart {
             },
         };
         this.data = data;
-        console.log("GRAPH")
-        console.log(data)
+
+        //set up graph, nodes and links for sankey
+        this.graph = { "nodes": [], "links": [] };
+        this.nodes = [];
+        this.links = [];
+
         this.initVis()
     }
 
     initVis() {
 
         let vis = this;
+
+        // DATA WRANGLING:
+        let data = vis.data
+        var groupedData = d3.group(data, d => d.Top_Reason, d => d.CostOfLearningBins)
+        var frequencyArray = [];
+
+        // Iterate over the grouped data and populate the object
+        groupedData.forEach((subGroup, key1) => {
+            subGroup.forEach((value, key2) => {
+                var combination = `${key1} - ${key2}`;
+                var frequency = value.length;
+
+                // Create an entry in the object
+                frequencyArray.push({
+                    source: key1,
+                    target: key2,
+                    value: frequency
+                });
+            });
+        });
+
+        let graph = vis.graph;
+        frequencyArray.forEach(function (d) {
+            graph.nodes.push({ "name": d.source });
+            graph.nodes.push({ "name": d.target });
+            graph.links.push({
+                "source": d.source,
+                "target": d.target,
+                "value": +d.value
+            });
+        });
+
+        graph.nodes = Array.from(d3.group(graph.nodes, (d) => d.name).keys()).filter(v => v)
+
+        // loop through each link replacing the text with its index from node
+        graph.links.forEach(function (d, i) {
+            graph.links[i].source = graph.nodes.indexOf(graph.links[i].source);
+            graph.links[i].target = graph.nodes.indexOf(graph.links[i].target);
+        });
+
+        //loop through each nodes to make nodes an array of objects rather than an array of strings 
+        graph.nodes.forEach(function (d, i) {
+            graph.nodes[i] = { "name": d };
+        });
+
+        // LAYOUT AND DESIGN:
         // Calculate inner chart size. Margin specifies the space around the actual chart.
         vis.config.width =
             vis.config.containerWidth -
@@ -53,11 +103,19 @@ class SankeyChart {
 
         // Applies it to the data. We make a copy of the nodes and links objects
         const { nodes, links } = sankey({
-            nodes: vis.data.nodes.map(d => Object.assign({}, d)),
-            links: vis.data.links.map(d => Object.assign({}, d))
+            nodes: graph.nodes.map(d => Object.assign({}, d)),
+            links: graph.links.map(d => Object.assign({}, d))
         });
 
+        vis.nodes = nodes;
+        vis.links = links;
 
+        vis.renderVis();
+
+    }
+
+    renderVis() {
+        let vis = this;
         // Defines a color scale.
         const color = d3.scaleOrdinal(d3.schemeCategory10);
 
@@ -65,7 +123,7 @@ class SankeyChart {
         const rect = vis.svg.append("g")
             .attr("stroke", "#000")
             .selectAll()
-            .data(nodes)
+            .data(vis.nodes)
             .join("rect")
             .attr("x", d => d.x0)
             .attr("y", d => d.y0)
@@ -80,7 +138,7 @@ class SankeyChart {
             .attr("fill", "#cf4036") // doing red for now for easier debugging
             .attr("stroke-opacity", 0.5)
             .selectAll()
-            .data(links)
+            .data(vis.links)
             .join("g")
             .style("mix-blend-mode", "multiply");
 
@@ -93,19 +151,13 @@ class SankeyChart {
         // Adds labels on the nodes.
         vis.svg.append("g")
             .selectAll()
-            .data(nodes)
+            .data(vis.nodes)
             .join("text")
             .attr("x", d => d.x0 < vis.config.width / 2 ? d.x1 + 6 : d.x0 - 6)
             .attr("y", d => (d.y1 + d.y0) / 2)
             .attr("dy", "0.35em")
             .attr("text-anchor", d => d.x0 < vis.config.width / 2 ? "start" : "end")
             .text(d => d.name);
-
-        vis.renderVis();
-
-    }
-
-    renderVis() {
 
 
     }
