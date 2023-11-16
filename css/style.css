@@ -81,3 +81,11 @@ h3 {
   margin: 5px 0 0 0;
   padding-left: 20px;
 }
+
+.legend {
+  font-size: 12px;
+}
+
+.bold {
+  font-weight: bold;
+}

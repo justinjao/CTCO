@@ -7,16 +7,24 @@ d3.csv("data/2021CoderFiltered.csv").then((data) => {
   let bins = [0, 100, 500, 1000, 10000, 100000];
   let labels = ['0-100', '100-500', '500-1000', '1000-10000', '>10000'];
 
-  // Create a new property 'CostOfLearningBins' for Sankey
-  data.forEach(item => {
-    item.CostOfLearningBins = labels.find((label, index) => {
+  // preprocess data
+  data.forEach((d) => {
+
+    // Bubble chart preprocessing
+    d.Learning_Methods = d.Learning_Methods.split(", ");
+    d.Helpful_Online_Resources = d.Helpful_Online_Resources.split(", ");
+    d.Helpful_Podcasts = d.Helpful_Podcasts.split(", ");
+    d.Helpful_YouTube_Channels = d.Helpful_YouTube_Channels.split(", ");
+
+    // Sankey chart preprocessing: create a new property 'CostOfLearningBins'
+    d.CostOfLearningBins = labels.find((label, index) => {
       return (
         index < bins.length - 1 &&
-        item['Money_Spent_on_Learning'] >= bins[index] &&
-        item['Money_Spent_on_Learning'] < bins[index + 1]
+        d['Money_Spent_on_Learning'] >= bins[index] &&
+        d['Money_Spent_on_Learning'] < bins[index + 1]
       );
     });
-  });
+  })
 
   const filterDispatch = d3.dispatch("ReasonChanged");
   // default
