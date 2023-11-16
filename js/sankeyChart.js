@@ -48,24 +48,15 @@ class SankeyChart {
             .nodeId(d => d.index)
             .nodeAlign(d3.sankeyLeft)
             .nodeWidth(15)
-            .nodePadding(10)
+            .nodePadding(15)
             .extent([[1, 5], [vis.config.width - 1, vis.config.height - 5]]);
 
-        console.log("SANKEY")
-        console.log(vis.data)
-
         // Applies it to the data. We make a copy of the nodes and links objects
-        // so as to avoid mutating the original.
         const { nodes, links } = sankey({
             nodes: vis.data.nodes.map(d => Object.assign({}, d)),
             links: vis.data.links.map(d => Object.assign({}, d))
         });
 
-        // const { nodes, links } = sankey(vis.data)
-
-        console.log(nodes)
-        console.log("LINKS")
-        console.log(links)
 
         // Defines a color scale.
         const color = d3.scaleOrdinal(d3.schemeCategory10);
@@ -86,7 +77,7 @@ class SankeyChart {
 
         // Creates the paths that represent the links.
         const link = vis.svg.append("g")
-            .attr("fill", "#e9edf5")  // 
+            .attr("fill", "#cf4036") // doing red for now for easier debugging
             .attr("stroke-opacity", 0.5)
             .selectAll()
             .data(links)
@@ -94,12 +85,11 @@ class SankeyChart {
             .style("mix-blend-mode", "multiply");
 
         link.append("path")
+            .attr('fill', 'none')
             .attr("d", d3.sankeyLinkHorizontal())
-            .attr("stroke", "#e9edf5")
+            .attr("stroke", "#cf4036")
             .attr("stroke-width", d => Math.max(1, d.width));
 
-        console.log("NODES")
-        console.log(nodes)
         // Adds labels on the nodes.
         vis.svg.append("g")
             .selectAll()
@@ -110,6 +100,8 @@ class SankeyChart {
             .attr("dy", "0.35em")
             .attr("text-anchor", d => d.x0 < vis.config.width / 2 ? "start" : "end")
             .text(d => d.name);
+
+        vis.renderVis();
 
     }
 
