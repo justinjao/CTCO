@@ -2,13 +2,29 @@
  * Load data from CSV file asynchronously and render charts
  */
 d3.csv("data/2021CoderFiltered.csv").then((data) => {
+
+  // Define bins and labels
+  let bins = [0, 100, 500, 1000, 10000, 100000];
+  let labels = ['0-100', '100-500', '500-1000', '1000-10000', '>10000'];
+
+  // preprocess data
   data.forEach((d) => {
-    // preprocess data
+
+    // Bubble chart preprocessing
     d.Learning_Methods = d.Learning_Methods.split(", ");
     d.Helpful_Online_Resources = d.Helpful_Online_Resources.split(", ");
     d.Helpful_Podcasts = d.Helpful_Podcasts.split(", ");
     d.Helpful_YouTube_Channels = d.Helpful_YouTube_Channels.split(", ");
-  });
+
+    // Sankey chart preprocessing: create a new property 'CostOfLearningBins'
+    d.CostOfLearningBins = labels.find((label, index) => {
+      return (
+        index < bins.length - 1 &&
+        d['Money_Spent_on_Learning'] >= bins[index] &&
+        d['Money_Spent_on_Learning'] < bins[index + 1]
+      );
+    });
+  })
 
   const filterDispatch = d3.dispatch("ReasonChanged");
   // default
@@ -39,15 +55,19 @@ d3.csv("data/2021CoderFiltered.csv").then((data) => {
   });
 
   const bubbleChart = new BubbleChart({
-      parentElement: "#bubble-chart",
-    }, filteredData
+    parentElement: "#bubble-chart",
+  }, filteredData
   );
 
   const barLineChart = new BarLineChart({
-      parentElement: "#bar-line-chart",
-    }, filteredData
+    parentElement: "#bar-line-chart",
+  }, filteredData
   );
 
+  const sankeyChart = new SankeyChart({
+    parentElement: "#sankey-chart",
+  }, data
+  );
   /**
    * Input field event listener
    */

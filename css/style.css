@@ -1,40 +1,38 @@
 body * {
-    box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
 }
 
 h3 {
-    margin-top: 0;
-    padding-top: 1rem;
-    padding-left: 1rem;
+  margin-top: 0;
+  padding-top: 1rem;
+  padding-left: 1rem;
 }
 
 .chart-container {
-    border: 1px solid #D3D3D3; 
-    margin: 0 auto;
+  border: 1px solid #d3d3d3;
+  margin: 0 auto;
 }
 
 .top-row {
-    /* width: 1400px; */
-    /* height: 750px; */
-    border-bottom: 1px solid #D3D3D3;
-    height: fit-content;
-    display: flex
+  /* width: 1400px; */
+  /* height: 750px; */
+  border-bottom: 1px solid #d3d3d3;
+  height: fit-content;
+  display: flex;
 }
- 
-.dot-matrix-container {
-    width: 60%;
-    border-right: 1px solid #D3D3D3;
 
+.dot-matrix-container {
+  width: 60%;
+  border-right: 1px solid #d3d3d3;
 }
 
 .treemap-container {
-    width: 40%;
+  width: 40%;
 }
 
 .matrix-area {
-    fill: transparent;
-    
+  fill: transparent;
 }
 
 .bottom-row {
@@ -42,48 +40,52 @@ h3 {
 }
 
 .bubble-chart-container {
-  border-right: 1px solid #D3D3D3;
+  border-right: 1px solid #d3d3d3;
+}
+
+.sankey-chart-container {
+  border-right: 1px solid #d3d3d3;
 }
 
 .bar-line-chart-container {
-  border-right: 1px solid #D3D3D3;
+  border-right: 1px solid #d3d3d3;
 }
 
 #dot-matrix-sorting {
-    margin-top: 10px; 
-    text-align:left; 
-    margin-left: 1rem;
-  }
+  margin-top: 10px;
+  text-align: left;
+  margin-left: 1rem;
+}
 
-  #tooltip {
-    position: absolute;
-    display: none;
-    background: #fff;
-    border: 1px solid #ddd;
-    padding: 8px;
-    min-width: 160px;
-    color: #333;
-    border-radius: 10px;
-    box-shadow: 5px 5px 5px 0px rgba(0, 0, 0, 0.2);
-    font-family: 'Poppins', sans-serif; 
-  }
-  
-  .tooltip-title {
-    color: #000;
-    font-size: 14px;
-    font-weight: 600;
-    margin: 0;
-  }
-  
-  #tooltip ul {
-    margin: 5px 0 0 0;
-    padding-left: 20px;
-  }
+#tooltip {
+  position: absolute;
+  display: none;
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 8px;
+  min-width: 160px;
+  color: #333;
+  border-radius: 10px;
+  box-shadow: 5px 5px 5px 0px rgba(0, 0, 0, 0.2);
+  font-family: "Poppins", sans-serif;
+}
 
-  .legend {
-    font-size: 12px;
-  }
+.tooltip-title {
+  color: #000;
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0;
+}
 
-  .bold {
-    font-weight: bold;
-  }
+#tooltip ul {
+  margin: 5px 0 0 0;
+  padding-left: 20px;
+}
+
+.legend {
+  font-size: 12px;
+}
+
+.bold {
+  font-weight: bold;
+}
