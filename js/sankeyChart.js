@@ -31,6 +31,24 @@ class SankeyChart {
 
         let vis = this;
 
+        // LAYOUT AND DESIGN:
+        // Calculate inner chart size. Margin specifies the space around the actual chart.
+        vis.config.width =
+            vis.config.containerWidth -
+            vis.config.margin.left -
+            vis.config.margin.right;
+        vis.config.height =
+            vis.config.containerHeight -
+            vis.config.margin.top -
+            vis.config.margin.bottom;
+        // Define size of SVG drawing area
+        vis.svg = d3
+            .select(vis.config.parentElement)
+            .append("svg")
+            .attr("id", "sankey")
+            .attr("width", vis.config.width)
+            .attr("height", vis.config.height);
+
         // DATA WRANGLING:
         let data = vis.data
         var groupedData = d3.group(data, d => d.Top_Reason, d => d.CostOfLearningBins)
@@ -75,24 +93,6 @@ class SankeyChart {
             graph.nodes[i] = { "name": d };
         });
 
-        // LAYOUT AND DESIGN:
-        // Calculate inner chart size. Margin specifies the space around the actual chart.
-        vis.config.width =
-            vis.config.containerWidth -
-            vis.config.margin.left -
-            vis.config.margin.right;
-        vis.config.height =
-            vis.config.containerHeight -
-            vis.config.margin.top -
-            vis.config.margin.bottom;
-        // Define size of SVG drawing area
-        vis.svg = d3
-            .select(vis.config.parentElement)
-            .append("svg")
-            .attr("id", "sankey")
-            .attr("width", vis.config.width)
-            .attr("height", vis.config.height);
-
         // Constructs and configures a Sankey generator.
         const sankey = d3.sankey()
             .nodeId(d => d.index)
@@ -117,7 +117,7 @@ class SankeyChart {
     renderVis() {
         let vis = this;
         // Defines a color scale.
-        const color = d3.scaleOrdinal(d3.schemeCategory10);
+        const color = d3.scaleOrdinal(d3.schemeSet3);
 
         // Creates the rects that represent the nodes.
         const rect = vis.svg.append("g")
@@ -130,12 +130,24 @@ class SankeyChart {
             .attr("height", d => d.y1 - d.y0)
             .attr("width", d => d.x1 - d.x0)
             .attr("fill", "#0000FF")
-        // .attr("fill", d => color(d.category));
+            .attr("fill", d => color(d.name));
+
+        // const gradient = link.append("linearGradient")
+        //     .attr("id", d => (d.uid = DOM.uid("link")).id)
+        //     .attr("gradientUnits", "userSpaceOnUse")
+        //     .attr("x1", d => d.source.x1)
+        //     .attr("x2", d => d.target.x0);
+        // gradient.append("stop")
+        //     .attr("offset", "0%")
+        //     .attr("stop-color", d => color(d.source.name));
+        // gradient.append("stop")
+        //     .attr("offset", "100%")
+        //     .attr("stop-color", d => color(d.target.name));
 
 
         // Creates the paths that represent the links.
         const link = vis.svg.append("g")
-            .attr("fill", "#cf4036") // doing red for now for easier debugging
+            .attr("fill", "none") // TODO: colour must match treeMap
             .attr("stroke-opacity", 0.5)
             .selectAll()
             .data(vis.links)
@@ -145,7 +157,7 @@ class SankeyChart {
         link.append("path")
             .attr('fill', 'none')
             .attr("d", d3.sankeyLinkHorizontal())
-            .attr("stroke", "#cf4036")
+            .attr("stroke", d => color(d.source.name))
             .attr("stroke-width", d => Math.max(1, d.width));
 
         // Adds labels on the nodes.
@@ -158,10 +170,6 @@ class SankeyChart {
             .attr("dy", "0.35em")
             .attr("text-anchor", d => d.x0 < vis.config.width / 2 ? "start" : "end")
             .text(d => d.name);
-
-
     }
-
-
 
 }
