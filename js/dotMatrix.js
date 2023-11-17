@@ -275,6 +275,7 @@ class DotMatrix {
            <li>University study: ${d.University_Study}</li>
            <li>Current Employment Status: ${d.Current_Employment_Status}</li>
            <li>Current Field of Work: ${d.Current_Field_of_Work}</li>
+           <li>Career Aspirations: ${d.Interested_Careers}</li>
        `);
       })
       .on("mouseleave", () => {
