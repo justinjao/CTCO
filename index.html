@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <title>Coding Odyssey </title>
+  <title>Coding Odyssey</title>
   <meta charset="UTF-8">
   <link rel="icon" href="data:;base64,iVBORwOKGO=" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -10,11 +10,30 @@
 </head>
 
 <body>
-  <h1>Cracking the Coding Odyssey</h1>
-  <!-- Add HTML content, SVG drawing area, ... -->
   <div class="chart-container">
     <div class="top-row">
+      <div class="intro">
+        <h1>👩🏻‍💻 Cracking the Coding Odyssey👨🏽‍💻</h1>
+        <p>
+          The emergence of technology has attracted more and more people into the coding world.
+          It can feel intimidating at first, but you are not alone! 
+          <br>
+          <br>
+          We are a group of UBC students that are interested to gain insights into 
+          why and how people are learning to code. Visualizations are created with 
+          data dervied from FreeCodeCamp's 2021 New Coder Survey.
+        </p>
+      </div>
+      <div class="treemap-container">
+        <h3>Motivations</h3>
+        <div id="treemap-vis"></div>
+      </div>
+    </div>
+    <div class="middle-row">
 
+      <div class="bar-line-chart-container">
+        <h3>Career Aspirations</h3><svg id="bar-line-chart"></svg>
+      </div>
 
       <div class="dot-matrix-container">
         <h3>Demographics</h3>
@@ -43,10 +62,6 @@
         <div id="matrix">
         </div>
       </div>
-      <div class="treemap-container">
-        <h3>Motivations</h3>
-        <div id="treemap-vis"></div>
-      </div>
     </div>
     <div class="bottom-row">
       <div class="bubble-chart-container">
@@ -56,9 +71,6 @@
       <div class="sankey-chart-container">
         <h3>Cost of Learning</h3>
         <div id="sankey-chart"></div>
-      </div>
-      <div class="bar-line-chart-container">
-        <h3>Career Aspirations</h3><svg id="bar-line-chart"></svg>
       </div>
     </div>
 
