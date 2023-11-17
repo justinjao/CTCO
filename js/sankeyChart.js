@@ -7,7 +7,7 @@ class SankeyChart {
     constructor(_config, data) {
         this.config = {
             parentElement: _config.parentElement,
-            containerWidth: 928,
+            containerWidth: 900,
             containerHeight: 600,
             tooltipPadding: 15,
             margin: {
