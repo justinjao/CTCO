@@ -2,14 +2,12 @@
  * Load data from CSV file asynchronously and render charts
  */
 d3.csv("data/2021CoderFiltered.csv").then((data) => {
-
   // Define bins and labels
   let bins = [0, 100, 500, 1000, 10000, 100000];
-  let labels = ['0-100', '100-500', '500-1000', '1000-10000', '>10000'];
+  let labels = ["0-100", "100-500", "500-1000", "1000-10000", ">10000"];
 
   // preprocess data
   data.forEach((d) => {
-
     // Bubble chart preprocessing
     d.Learning_Methods = d.Learning_Methods.split(", ");
     d.Helpful_Online_Resources = d.Helpful_Online_Resources.split(", ");
@@ -20,13 +18,14 @@ d3.csv("data/2021CoderFiltered.csv").then((data) => {
     d.CostOfLearningBins = labels.find((label, index) => {
       return (
         index < bins.length - 1 &&
-        d['Money_Spent_on_Learning'] >= bins[index] &&
-        d['Money_Spent_on_Learning'] < bins[index + 1]
+        d["Money_Spent_on_Learning"] >= bins[index] &&
+        d["Money_Spent_on_Learning"] < bins[index + 1]
       );
     });
-  })
+  });
 
   const filterDispatch = d3.dispatch("ReasonChanged");
+  const careerDispatch = d3.dispatch("CareerChanged");
   // default
   const filteredData = data.filter(
     (d) => d.Top_Reason === "To start your first career"
@@ -35,7 +34,8 @@ d3.csv("data/2021CoderFiltered.csv").then((data) => {
     {
       parentElement: "#matrix",
     },
-    filteredData
+    filteredData,
+    careerDispatch
   );
 
   const treeMap = new TreeMap(
@@ -54,19 +54,25 @@ d3.csv("data/2021CoderFiltered.csv").then((data) => {
     dotMatrix.updateVis();
   });
 
-  const bubbleChart = new BubbleChart({
-    parentElement: "#bubble-chart",
-  }, filteredData
+  const bubbleChart = new BubbleChart(
+    {
+      parentElement: "#bubble-chart",
+    },
+    filteredData
   );
 
-  const barLineChart = new BarLineChart({
-    parentElement: "#bar-line-chart",
-  }, filteredData
+  const barLineChart = new BarLineChart(
+    {
+      parentElement: "#bar-line-chart",
+    },
+    filteredData
   );
 
-  const sankeyChart = new SankeyChart({
-    parentElement: "#sankey-chart",
-  }, data
+  const sankeyChart = new SankeyChart(
+    {
+      parentElement: "#sankey-chart",
+    },
+    data
   );
   /**
    * Input field event listener
