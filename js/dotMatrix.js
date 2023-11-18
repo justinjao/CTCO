@@ -30,9 +30,7 @@ class DotMatrix {
    * @param {Object}
    */
 
-  // TODO: add major as a filter choice
-
-  constructor(_config, data) {
+  constructor(_config, data, careerDispatch) {
     this.config = {
       parentElement: _config.parentElement,
       containerWidth: 800,
@@ -47,6 +45,7 @@ class DotMatrix {
     };
     this.activeSort = "gender";
     this.data = data;
+    this.careerDispatch = careerDispatch;
     this.legendMapping = [
       {
         name: "gender",
@@ -88,40 +87,6 @@ class DotMatrix {
         Engineering: "#b3de69",
         Other: "#fccde5",
       },
-      //   {
-      //     name: "university-study",
-      //     "IT/Engineering": "#8dd3c7",
-      //     Arts: "#ffffb3",
-      //     "Social Sciences": "#bebada",
-      //     "Natural Sciences": "#fb8072",
-      //     "Business/Health/Humanities": "#80b1d3",
-      //     "Math/Statistics": "#fdb462",
-      //     Other: "#b3de69",
-      //   },
-      //   {
-      //     name: "university-study",
-      //     "Information systems, information technology, or system administration":
-      //       "#8dd3c7",
-      //     "Computer science, computer engineering, software engineering or data science":
-      //       "#ffffb3",
-      //     "Fine arts or performing arts (e.g., graphic design, music, studio, art)":
-      //       "#bebada",
-      //     "A social science (e.g., sociology, psychology, political science, economics)":
-      //       "#fb8072",
-      //     "Another engineering discipline (e.g., civil, electrical, mechanical)":
-      //       "#80b1d3",
-      //     "A natural science (e.g., biology, chemistry, physics)": "#fdb462",
-      //     "Undecided or no major": "#b3de69",
-      //     "I didn't attend a university": "#fccde5",
-      //     "A business discipline (e.g., accounting, finance, marketing)":
-      //       "#1f78b4",
-      //     "A health science (e.g., nursing, pharmacy, radiology)": "#fb9a99",
-      //     "A humanities discipline (e.g., literature, history, philosophy)":
-      //       "#e31a1c",
-      //     "Environmental science (e.g., earth sciences, sustainability)":
-      //       "#fdbf6f",
-      //     "Mathematics or statistics": "#ff7f00",
-      //   },
     ];
     this.initVis();
   }
@@ -159,6 +124,11 @@ class DotMatrix {
     vis.legendContainer = vis.svg
       .append("g")
       .attr("class", "dot-matrix-legend-container");
+
+    vis.careerDispatch.on("CareerChanged.Matrix", function (c, e) {
+      vis.selectedCareer = c;
+      vis.renderVis();
+    });
     vis.updateVis();
   }
 
@@ -209,32 +179,6 @@ class DotMatrix {
       "Mathematics or statistics": "Math/Statistics",
     };
 
-    // const aggregatedCategories = {
-    //   "IT/Engineering": [
-    //     "Information systems, information technology, or system administration",
-    //     "Computer science, computer engineering, software engineering or data science",
-    //     "Another engineering discipline (e.g., civil, electrical, mechanical)",
-    //   ],
-    //   Arts: [
-    //     "Fine arts or performing arts (e.g., graphic design, music, studio, art)",
-    //   ],
-    //   "Social Sciences": [
-    //     "A social science (e.g., sociology, psychology, political science, economics)",
-    //     "Education",
-    //   ],
-    //   "Natural Sciences": [
-    //     "A natural science (e.g., biology, chemistry, physics)",
-    //     "Environmental science (e.g., earth sciences, sustainability)",
-    //   ],
-    //   Other: ["Undecided or no major", "I didn't attend a university"],
-    //   "Business/Health/Humanities": [
-    //     "A business discipline (e.g., accounting, finance, marketing)",
-    //     "A health science (e.g., nursing, pharmacy, radiology)",
-    //     "A humanities discipline (e.g., literature, history, philosophy)",
-    //   ],
-    //   "Math/Statistics": ["Mathematics or statistics"],
-    // };
-
     let vis = this;
     const CIRCLE_RADIUS = 6;
     const CIRCLE_DIAM = 2 * CIRCLE_RADIUS;
@@ -281,6 +225,15 @@ class DotMatrix {
       .on("mouseleave", () => {
         d3.select("#tooltip").style("display", "none");
         // Remove the outline when the mouse leaves
+      })
+      .on("click", (e, d) => {
+        console.log("I clicked", d.Interested_Careers);
+
+        let newCareer = undefined;
+        if (vis.selectedCareer !== d.Interested_Careers) {
+          newCareer = d.Interested_Careers;
+        }
+        vis.careerDispatch.call("CareerChanged", e, newCareer);
       });
 
     const legendItems = vis.legendContainer.selectAll(".legend-item").data(
@@ -325,6 +278,9 @@ class DotMatrix {
 
   renderBasedOnSort(d, sort) {
     let vis = this;
+    if (vis.selectedCareer && d.Interested_Careers !== vis.selectedCareer) {
+      return "#999";
+    }
     if (sort === "gender") {
       const perception = d.Self_Perception;
       return vis.activeLegend[perception];

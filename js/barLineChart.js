@@ -1,5 +1,5 @@
 class BarLineChart {
-  constructor(_config, _data) {
+  constructor(_config, _data, careerDispatch) {
     this.config = {
       parentElement: _config.parentElement,
       containerWidth: 500,
@@ -12,6 +12,7 @@ class BarLineChart {
         left: 50,
       },
     };
+    this.careerDispatch = careerDispatch;
     this.data = _data;
     this.initVis();
   }
@@ -71,6 +72,12 @@ class BarLineChart {
 
     // TODO: Append titles
 
+    // tendy addition: career dispatch
+    vis.careerDispatch.on("CareerChanged.Bar", (c) => {
+      console.log("Bar chart", c);
+      vis.selectedCareer = c;
+      vis.renderVis();
+    });
     vis.updateVis();
   }
 
@@ -155,7 +162,22 @@ class BarLineChart {
       .attr("x", (d) => vis.xScale(vis.xValue(d)))
       .attr("width", vis.xScale.bandwidth())
       .attr("height", (d) => vis.height - vis.yScaleLeft(vis.yValueLeft(d)))
-      .attr("y", (d) => vis.yScaleLeft(vis.yValueLeft(d)));
+      .attr("y", (d) => vis.yScaleLeft(vis.yValueLeft(d)))
+
+      // tendy addition: career dispatch
+      .attr("stroke", (d) =>
+        d.key === vis.selectedCareer ? "pink" : undefined
+      )
+      .attr("stroke-width", 5)
+      .on("click", (e, d) => {
+        console.log("bar clicked", d);
+        let newCareer = undefined;
+        if (d.key !== vis.selectedCareer) {
+          newCareer = d.key;
+        }
+        console.log("new career", newCareer);
+        vis.careerDispatch.call("CareerChanged", e, newCareer);
+      });
 
     // Line generator
     const line = d3
