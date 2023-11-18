@@ -124,6 +124,11 @@ class DotMatrix {
     vis.legendContainer = vis.svg
       .append("g")
       .attr("class", "dot-matrix-legend-container");
+
+    vis.careerDispatch.on("CareerChanged.Matrix", function (c, e) {
+      vis.selectedCareer = c;
+      vis.renderVis();
+    });
     vis.updateVis();
   }
 
@@ -229,8 +234,6 @@ class DotMatrix {
           newCareer = d.Interested_Careers;
         }
         vis.careerDispatch.call("CareerChanged", e, newCareer);
-        vis.selectedCareer = newCareer;
-        vis.renderVis();
       });
 
     const legendItems = vis.legendContainer.selectAll(".legend-item").data(

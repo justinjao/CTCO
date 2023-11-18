@@ -65,7 +65,8 @@ d3.csv("data/2021CoderFiltered.csv").then((data) => {
     {
       parentElement: "#bar-line-chart",
     },
-    filteredData
+    filteredData,
+    careerDispatch
   );
 
   const sankeyChart = new SankeyChart(
