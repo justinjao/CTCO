@@ -6,7 +6,7 @@ class BarLineChart {
       containerHeight: 500,
       tooltipPadding: 15,
       margin: {
-        top: 25,
+        top: 50,
         right: 150,
         bottom: 210,
         left: 50,
