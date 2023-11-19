@@ -28,16 +28,27 @@ h3 {
   margin: 0 auto;
 }
 
-.bar-line-chart-container {
-  /* border-right: 1px solid #d3d3d3; */
-}
-
 .matrix-area {
   fill: transparent;
 }
 
-.bubble-chart-container {
-  /* border-right: 1px solid #d3d3d3; */
+/* Bar line chart */
+.bar {
+  fill: #b3de69;
+}
+
+.y-axis-left {
+  color: #b3de69;
+  font-weight: bolder;
+}
+
+.axis-title {
+  font-size: small;
+}
+
+.axis-title-left {
+  fill: #b3de69;
+  font-weight: bolder;
 }
 
 .dot-matrix-container, .bar-line-chart-container, 

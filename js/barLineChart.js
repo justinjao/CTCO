@@ -6,7 +6,7 @@ class BarLineChart {
       containerHeight: 500,
       tooltipPadding: 15,
       margin: {
-        top: 50,
+        top: 25,
         right: 150,
         bottom: 210,
         left: 50,
@@ -62,15 +62,32 @@ class BarLineChart {
       .attr("transform", `translate(0, ${vis.height})`);
 
     // Append y-axis left group
-    vis.yAxisLeftG = vis.chart.append("g").attr("class", "axis").attr("transform", "translate(0.5, 0)");
+    vis.yAxisLeftG = vis.chart.append("g").attr("class", "axis y-axis-left").attr("transform", "translate(0.5, 0)");
 
     // Append y-axis right group
     vis.yAxisRightG = vis.chart
       .append("g")
-      .attr("class", "axis")
+      .attr("class", "axis y-axis-right")
       .attr("transform", `translate(${vis.width}, 0)`);
 
-    // TODO: Append titles
+    // Append titles
+    vis.chart
+      .append("text")
+      .attr("class", "axis-title axis-title-left")
+      .attr("y", -10)
+      .attr("x", 100)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("↑ Number of People");
+
+    vis.chart
+      .append("text")
+      .attr("class", "axis-title axis-title-right")
+      .attr("y", -10)
+      .attr("x", vis.width + 115)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("↑ Expected Salary");
 
     // tendy addition: career dispatch
     vis.careerDispatch.on("CareerChanged.Bar", (c) => {
@@ -121,7 +138,7 @@ class BarLineChart {
       value,
     }));
 
-    // Specificy accessor functions
+    // Specify accessor functions
     vis.xValue = (d) => d.key;
     vis.yValueLeft = (d) => d.value.length;
     vis.yValueRight = (d) => d.value;
@@ -188,7 +205,7 @@ class BarLineChart {
       .attr("fill", "none")
       .attr("stroke", "currentColor")
       .attr("stroke-miterlimit", 1)
-      .attr("stroke-width", 3)
+      .attr("stroke-width", 2)
       .attr("d", line(vis.careerSalaryMap));
 
     // Update axes
