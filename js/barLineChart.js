@@ -2,13 +2,13 @@ class BarLineChart {
   constructor(_config, _data, careerDispatch) {
     this.config = {
       parentElement: _config.parentElement,
-      containerWidth: 500,
+      containerWidth: 750,
       containerHeight: 500,
       tooltipPadding: 15,
       margin: {
         top: 50,
-        right: 50,
-        bottom: 50,
+        right: 150,
+        bottom: 210,
         left: 50,
       },
     };
@@ -32,14 +32,14 @@ class BarLineChart {
       vis.config.margin.bottom;
 
     // Initialize scales
-    vis.xScale = d3.scaleBand().range([0, vis.width]).padding(0.1);
+    vis.xScale = d3.scaleBand().range([0, vis.width]).padding(0.15);
     vis.yScaleLeft = d3.scaleLinear().range([vis.height, 0]);
-    vis.yScaleRight = d3.scaleBand().range([vis.height, 0]);
+    vis.yScaleRight = d3.scaleBand().range([vis.height + 10.5, 10.5]);
 
     // Initialize axes
-    vis.xAxis = d3.axisBottom(vis.xScale);
-    vis.yAxisLeft = d3.axisLeft(vis.yScaleLeft);
-    vis.yAxisRight = d3.axisRight(vis.yScaleRight);
+    vis.xAxis = d3.axisBottom(vis.xScale).tickSizeOuter(0);
+    vis.yAxisLeft = d3.axisLeft(vis.yScaleLeft).tickSizeOuter(0);
+    vis.yAxisRight = d3.axisRight(vis.yScaleRight).tickSizeOuter(0);
 
     // Define size of SVG drawing area
     vis.svg = d3
@@ -62,13 +62,13 @@ class BarLineChart {
       .attr("transform", `translate(0, ${vis.height})`);
 
     // Append y-axis left group
-    vis.yAxisLeftG = vis.chart.append("g").attr("class", "axis");
+    vis.yAxisLeftG = vis.chart.append("g").attr("class", "axis").attr("transform", "translate(0.5, 0)");
 
     // Append y-axis right group
     vis.yAxisRightG = vis.chart
       .append("g")
       .attr("class", "axis")
-      .attr("transform", `translate(${vis.width + 5}, 0)`);
+      .attr("transform", `translate(${vis.width}, 0)`);
 
     // TODO: Append titles
 
@@ -78,6 +78,7 @@ class BarLineChart {
       vis.selectedCareer = c;
       vis.renderVis();
     });
+
     vis.updateVis();
   }
 
@@ -89,7 +90,7 @@ class BarLineChart {
       (v) => v,
       (d) => d.Interested_Careers
     );
-    const careerCountMap = [];
+
     const careerSalaryMap = [];
 
     for (const [career, data] of aggregatedData) {
@@ -107,8 +108,6 @@ class BarLineChart {
         },
         Object.keys(salaryObject)[0]
       );
-
-      careerCountMap.push([career, data.length]);
       careerSalaryMap.push([career, salaryKey]);
     }
 
@@ -151,8 +150,6 @@ class BarLineChart {
   renderVis() {
     let vis = this;
 
-    console.log(vis.careerSalaryMap);
-
     // Add rectangles
     const bars = vis.chart
       .selectAll(".bar")
@@ -183,7 +180,7 @@ class BarLineChart {
     const line = d3
       .line()
       .x((d) => vis.xScale(vis.xValue(d)) + vis.xScale.bandwidth() / 2)
-      .y((d) => vis.yScaleRight(vis.yValueRight(d)));
+      .y((d) => vis.yScaleRight(vis.yValueRight(d)) - 10.5);
 
     // Add lines
     const lines = vis.chart
@@ -195,8 +192,16 @@ class BarLineChart {
       .attr("d", line(vis.careerSalaryMap));
 
     // Update axes
-    vis.xAxisG.call(vis.xAxis);
-    vis.yAxisLeftG.call(vis.yAxisLeft);
-    vis.yAxisRightG.call(vis.yAxisRight);
+    vis.xAxisG
+      .call(vis.xAxis)
+      .selectAll("text")
+      .attr("transform", "rotate(-45) translate(-10, 0)")
+      .style("text-anchor", "end");
+    vis.yAxisLeftG
+      .call(vis.yAxisLeft)
+      .call((g) => g.select(".domain").remove());
+    vis.yAxisRightG
+      .call(vis.yAxisRight)
+      .call((g) => g.select(".domain").remove());
   }
 }
