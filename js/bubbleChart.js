@@ -7,8 +7,8 @@ class BubbleChart {
     constructor(_config, data) {
       this.config = {
         parentElement: _config.parentElement,
-        containerWidth: 584,
-        containerHeight: 500,
+        containerWidth: 800,
+        containerHeight: 570,
         tooltipPadding: 15,
         margin: {
           top: 50,
@@ -39,11 +39,11 @@ class BubbleChart {
       // SVG group that contains the chart (adjusted to margins)
       vis.chartArea = vis.svg.append('g')
         .attr('class', "bubble-area")
-        .attr('transform', `translate(${vis.config.margin.left},${vis.config.margin.top + 20})`);
+        .attr('transform', `translate(${vis.config.margin.left},${vis.config.margin.top})`);
 
       // Initialize radius scale of circles
       vis.radiusScale = d3.scaleSqrt()
-        .range([5, 70]);
+        .range([5, 90]);
       
       // Initialize categorical color scale
       const legendData = ['Helpful_Online_Resources','Helpful_Podcasts','Helpful_YouTube_Channels', 'Helpful_In_Person_Events'];
@@ -184,6 +184,7 @@ class BubbleChart {
             .style('display', 'block')
             .html(`
             <div class="bold">${d.name}</div>
+            <div class="italic">${d.category.replace(/_/g, ' ')}</div>
             <div>${d.count}</div>
             `)
             .style('left', (event.pageX + vis.config.tooltipPadding) + 'px')
