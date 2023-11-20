@@ -23,6 +23,7 @@ class SankeyChart {
         this.graph = { "nodes": [], "links": [] };
         this.nodes = [];
         this.links = [];
+        this.sankey = null;
 
         this.initVis()
     }
@@ -49,10 +50,27 @@ class SankeyChart {
             .attr("width", vis.config.width)
             .attr("height", vis.config.height);
 
+        // Constructs and configures a Sankey generator.
+        vis.sankey = d3.sankey()
+            .nodeId(d => d.index)
+            .nodeAlign(d3.sankeyLeft)
+            .nodeWidth(15)
+            .nodePadding(15)
+            .extent([[1, 5], [vis.config.width - 1, vis.config.height - 5]]);
+
+        vis.updateVis();
+
+    }
+
+    updateVis() {
+        let vis = this;
+
         // DATA WRANGLING:
-        let data = vis.data
-        var groupedData = d3.group(data, d => d.Top_Reason, d => d.CostOfLearningBins)
+        var groupedData = d3.group(vis.data, d => d.Location, d => d.CostOfLearningBins)
         var frequencyArray = [];
+
+        console.log("SANKEY DATA")
+        console.log(vis.data)
 
         // Iterate over the grouped data and populate the object
         groupedData.forEach((subGroup, key1) => {
@@ -69,42 +87,37 @@ class SankeyChart {
             });
         });
 
-        let graph = vis.graph;
+        vis.graph = { "nodes": [], "links": [] };
+
         frequencyArray.forEach(function (d) {
-            graph.nodes.push({ "name": d.source });
-            graph.nodes.push({ "name": d.target });
-            graph.links.push({
+            vis.graph.nodes.push({ "name": d.source });
+            vis.graph.nodes.push({ "name": d.target });
+            vis.graph.links.push({
                 "source": d.source,
                 "target": d.target,
                 "value": +d.value
             });
         });
 
-        graph.nodes = Array.from(d3.group(graph.nodes, (d) => d.name).keys()).filter(v => v)
+        vis.graph.nodes = Array.from(d3.group(vis.graph.nodes, (d) => d.name).keys()).filter(v => v)
 
         // loop through each link replacing the text with its index from node
-        graph.links.forEach(function (d, i) {
-            graph.links[i].source = graph.nodes.indexOf(graph.links[i].source);
-            graph.links[i].target = graph.nodes.indexOf(graph.links[i].target);
+        vis.graph.links.forEach(function (d, i) {
+            vis.graph.links[i].source = vis.graph.nodes.indexOf(vis.graph.links[i].source);
+            vis.graph.links[i].target = vis.graph.nodes.indexOf(vis.graph.links[i].target);
         });
 
         //loop through each nodes to make nodes an array of objects rather than an array of strings 
-        graph.nodes.forEach(function (d, i) {
-            graph.nodes[i] = { "name": d };
+        vis.graph.nodes.forEach(function (d, i) {
+            vis.graph.nodes[i] = { "name": d };
         });
 
-        // Constructs and configures a Sankey generator.
-        const sankey = d3.sankey()
-            .nodeId(d => d.index)
-            .nodeAlign(d3.sankeyLeft)
-            .nodeWidth(15)
-            .nodePadding(15)
-            .extent([[1, 5], [vis.config.width - 1, vis.config.height - 5]]);
-
+        console.log("ISTHISHERE")
+        console.log(vis.sankey)
         // Applies it to the data. We make a copy of the nodes and links objects
-        const { nodes, links } = sankey({
-            nodes: graph.nodes.map(d => Object.assign({}, d)),
-            links: graph.links.map(d => Object.assign({}, d))
+        const { nodes, links } = vis.sankey({
+            nodes: vis.graph.nodes.map(d => Object.assign({}, d)),
+            links: vis.graph.links.map(d => Object.assign({}, d))
         });
 
         vis.nodes = nodes;

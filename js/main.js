@@ -52,6 +52,8 @@ d3.csv("data/2021CoderFiltered.csv").then((data) => {
     console.log("data filtered ", newFilteredData);
     dotMatrix.data = newFilteredData;
     dotMatrix.updateVis();
+    sankeyChart.data = newFilteredData;
+    sankeyChart.updateVis();
   });
 
   const bubbleChart = new BubbleChart(
@@ -73,7 +75,7 @@ d3.csv("data/2021CoderFiltered.csv").then((data) => {
     {
       parentElement: "#sankey-chart",
     },
-    data
+    filteredData
   );
   /**
    * Input field event listener
