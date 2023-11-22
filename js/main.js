@@ -4,7 +4,7 @@
 d3.csv("data/2021CoderFiltered.csv").then((data) => {
   // Define bins and labels
   let bins = [0, 100, 500, 1000, 10000, 100000];
-  let labels = ["0-100", "100-500", "500-1000", "1000-10000", ">10000"];
+  let labels = ["0-100", "101-500", "501-1000", "1001-10000", ">10000"];
 
   // preprocess data
   data.forEach((d) => {

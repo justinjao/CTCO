@@ -58,6 +58,11 @@ class SankeyChart {
             .nodePadding(15)
             .extent([[1, 5], [vis.config.width - 1, vis.config.height - 5]]);
 
+        let colourLegend = { ...LOCATION_COLOURS, ...COST_OF_LEARNING_COLOURS }
+        vis.colourScale = d3.scaleOrdinal()
+            .domain(Object.keys(colourLegend))
+            .range(Object.values(colourLegend));
+
         vis.updateVis();
 
     }
@@ -133,17 +138,17 @@ class SankeyChart {
         const color = d3.scaleOrdinal(d3.schemeSet3);
 
         // Creates the rects that represent the nodes.
-        const rect = vis.svg.append("g")
-            .attr("stroke", "#000")
-            .selectAll()
+        const rect = vis.svg.selectAll(".nodes")
             .data(vis.nodes)
             .join("rect")
+            .attr("stroke", "#000")
+            .attr("class", "nodes")
             .attr("x", d => d.x0)
             .attr("y", d => d.y0)
             .attr("height", d => d.y1 - d.y0)
             .attr("width", d => d.x1 - d.x0)
             .attr("fill", "#0000FF")
-            .attr("fill", d => color(d.name));
+            .attr("fill", d => vis.colourScale(d.name));
 
         // const gradient = link.append("linearGradient")
         //     .attr("id", d => (d.uid = DOM.uid("link")).id)
@@ -159,25 +164,23 @@ class SankeyChart {
 
 
         // Creates the paths that represent the links.
-        const link = vis.svg.append("g")
+        const link = vis.svg.selectAll(".links")
+            .data(vis.links)
+            .join("path")
+            .attr("class", "links")
             .attr("fill", "none") // TODO: colour must match treeMap
             .attr("stroke-opacity", 0.5)
-            .selectAll()
-            .data(vis.links)
-            .join("g")
-            .style("mix-blend-mode", "multiply");
-
-        link.append("path")
+            .style("mix-blend-mode", "multiply")
             .attr('fill', 'none')
             .attr("d", d3.sankeyLinkHorizontal())
-            .attr("stroke", d => color(d.source.name))
+            .attr("stroke", d => vis.colourScale(d.source.name))
             .attr("stroke-width", d => Math.max(1, d.width));
 
         // Adds labels on the nodes.
-        vis.svg.append("g")
-            .selectAll()
+        vis.svg.selectAll(".node-labels")
             .data(vis.nodes)
             .join("text")
+            .attr("class", "node-labels")
             .attr("x", d => d.x0 < vis.config.width / 2 ? d.x1 + 6 : d.x0 - 6)
             .attr("y", d => (d.y1 + d.y0) / 2)
             .attr("dy", "0.35em")
