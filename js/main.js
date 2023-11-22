@@ -54,6 +54,8 @@ d3.csv("data/2021CoderFiltered.csv").then((data) => {
     dotMatrix.updateVis();
     sankeyChart.data = newFilteredData;
     sankeyChart.updateVis();
+    bubbleChart.data = newFilteredData;
+    bubbleChart.updateVis();
   });
 
   const bubbleChart = new BubbleChart(

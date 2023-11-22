@@ -16,5 +16,14 @@ const COST_OF_LEARNING_COLOURS = {
     "1001-10000": "#3f9537",
     ">10000": "#3b8334"
 }
+
+const LEARNING_RESOURCES_COLOURS = {
+    "Helpful_Online_Resources": "#e5d8bd",
+    "Helpful_Podcasts": "#fed9a6",
+    "Helpful_YouTube_Channels": "#f3e5ab",
+    "Helpful_In_Person_Events": "#ccebc5"
+}
+
 window.LOCATION_COLOURS = LOCATION_COLOURS;
 window.COST_OF_LEARNING_COLOURS = COST_OF_LEARNING_COLOURS;
+window.LEARNING_RESOURCES_COLOURS = LEARNING_RESOURCES_COLOURS;
