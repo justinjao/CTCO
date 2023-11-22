@@ -23,6 +23,7 @@ class SankeyChart {
         this.graph = { "nodes": [], "links": [] };
         this.nodes = [];
         this.links = [];
+        this.sankey = null;
 
         this.initVis()
     }
@@ -49,10 +50,32 @@ class SankeyChart {
             .attr("width", vis.config.width)
             .attr("height", vis.config.height);
 
+        // Constructs and configures a Sankey generator.
+        vis.sankey = d3.sankey()
+            .nodeId(d => d.index)
+            .nodeAlign(d3.sankeyLeft)
+            .nodeWidth(15)
+            .nodePadding(15)
+            .extent([[1, 5], [vis.config.width - 1, vis.config.height - 5]]);
+
+        let colourLegend = { ...LOCATION_COLOURS, ...COST_OF_LEARNING_COLOURS }
+        vis.colourScale = d3.scaleOrdinal()
+            .domain(Object.keys(colourLegend))
+            .range(Object.values(colourLegend));
+
+        vis.updateVis();
+
+    }
+
+    updateVis() {
+        let vis = this;
+
         // DATA WRANGLING:
-        let data = vis.data
-        var groupedData = d3.group(data, d => d.Top_Reason, d => d.CostOfLearningBins)
+        var groupedData = d3.group(vis.data, d => d.Location, d => d.CostOfLearningBins)
         var frequencyArray = [];
+
+        console.log("SANKEY DATA")
+        console.log(vis.data)
 
         // Iterate over the grouped data and populate the object
         groupedData.forEach((subGroup, key1) => {
@@ -69,42 +92,37 @@ class SankeyChart {
             });
         });
 
-        let graph = vis.graph;
+        vis.graph = { "nodes": [], "links": [] };
+
         frequencyArray.forEach(function (d) {
-            graph.nodes.push({ "name": d.source });
-            graph.nodes.push({ "name": d.target });
-            graph.links.push({
+            vis.graph.nodes.push({ "name": d.source });
+            vis.graph.nodes.push({ "name": d.target });
+            vis.graph.links.push({
                 "source": d.source,
                 "target": d.target,
                 "value": +d.value
             });
         });
 
-        graph.nodes = Array.from(d3.group(graph.nodes, (d) => d.name).keys()).filter(v => v)
+        vis.graph.nodes = Array.from(d3.group(vis.graph.nodes, (d) => d.name).keys()).filter(v => v)
 
         // loop through each link replacing the text with its index from node
-        graph.links.forEach(function (d, i) {
-            graph.links[i].source = graph.nodes.indexOf(graph.links[i].source);
-            graph.links[i].target = graph.nodes.indexOf(graph.links[i].target);
+        vis.graph.links.forEach(function (d, i) {
+            vis.graph.links[i].source = vis.graph.nodes.indexOf(vis.graph.links[i].source);
+            vis.graph.links[i].target = vis.graph.nodes.indexOf(vis.graph.links[i].target);
         });
 
         //loop through each nodes to make nodes an array of objects rather than an array of strings 
-        graph.nodes.forEach(function (d, i) {
-            graph.nodes[i] = { "name": d };
+        vis.graph.nodes.forEach(function (d, i) {
+            vis.graph.nodes[i] = { "name": d };
         });
 
-        // Constructs and configures a Sankey generator.
-        const sankey = d3.sankey()
-            .nodeId(d => d.index)
-            .nodeAlign(d3.sankeyLeft)
-            .nodeWidth(15)
-            .nodePadding(15)
-            .extent([[1, 5], [vis.config.width - 1, vis.config.height - 5]]);
-
+        console.log("ISTHISHERE")
+        console.log(vis.sankey)
         // Applies it to the data. We make a copy of the nodes and links objects
-        const { nodes, links } = sankey({
-            nodes: graph.nodes.map(d => Object.assign({}, d)),
-            links: graph.links.map(d => Object.assign({}, d))
+        const { nodes, links } = vis.sankey({
+            nodes: vis.graph.nodes.map(d => Object.assign({}, d)),
+            links: vis.graph.links.map(d => Object.assign({}, d))
         });
 
         vis.nodes = nodes;
@@ -120,17 +138,17 @@ class SankeyChart {
         const color = d3.scaleOrdinal(d3.schemeSet3);
 
         // Creates the rects that represent the nodes.
-        const rect = vis.svg.append("g")
-            .attr("stroke", "#000")
-            .selectAll()
+        const rect = vis.svg.selectAll(".nodes")
             .data(vis.nodes)
             .join("rect")
+            .attr("stroke", "#000")
+            .attr("class", "nodes")
             .attr("x", d => d.x0)
             .attr("y", d => d.y0)
             .attr("height", d => d.y1 - d.y0)
             .attr("width", d => d.x1 - d.x0)
             .attr("fill", "#0000FF")
-            .attr("fill", d => color(d.name));
+            .attr("fill", d => vis.colourScale(d.name));
 
         // const gradient = link.append("linearGradient")
         //     .attr("id", d => (d.uid = DOM.uid("link")).id)
@@ -146,25 +164,23 @@ class SankeyChart {
 
 
         // Creates the paths that represent the links.
-        const link = vis.svg.append("g")
+        const link = vis.svg.selectAll(".links")
+            .data(vis.links)
+            .join("path")
+            .attr("class", "links")
             .attr("fill", "none") // TODO: colour must match treeMap
             .attr("stroke-opacity", 0.5)
-            .selectAll()
-            .data(vis.links)
-            .join("g")
-            .style("mix-blend-mode", "multiply");
-
-        link.append("path")
+            .style("mix-blend-mode", "multiply")
             .attr('fill', 'none')
             .attr("d", d3.sankeyLinkHorizontal())
-            .attr("stroke", d => color(d.source.name))
+            .attr("stroke", d => vis.colourScale(d.source.name))
             .attr("stroke-width", d => Math.max(1, d.width));
 
         // Adds labels on the nodes.
-        vis.svg.append("g")
-            .selectAll()
+        vis.svg.selectAll(".node-labels")
             .data(vis.nodes)
             .join("text")
+            .attr("class", "node-labels")
             .attr("x", d => d.x0 < vis.config.width / 2 ? d.x1 + 6 : d.x0 - 6)
             .attr("y", d => (d.y1 + d.y0) / 2)
             .attr("dy", "0.35em")

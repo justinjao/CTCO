@@ -67,14 +67,14 @@ class DotMatrix {
       },
       {
         name: "location",
-        "Latin America and Caribbean": "#8dd3c7",
-        "East Asia and Pacific": "#ffffb3",
-        "Europe and Central Asia": "#bebada",
-        "Middle East and North Africa": "#fb8072",
-        "North America": "#80b1d3",
-        "South Asia": "#fdb462",
-        "Southeast Asia": "#b3de69",
-        "Sub-Saharan Africa": "#fccde5",
+        "Latin America and Caribbean": LOCATION_COLOURS["Latin America and Caribbean"],
+        "East Asia and Pacific": LOCATION_COLOURS["East Asia and Pacific"],
+        "Europe and Central Asia": LOCATION_COLOURS["Europe and Central Asia"],
+        "Middle East and North Africa": LOCATION_COLOURS["Middle East and North Africa"],
+        "North America": LOCATION_COLOURS["North America"],
+        "South Asia": LOCATION_COLOURS["South Asia"],
+        "Southeast Asia": LOCATION_COLOURS["Southeast Asia"],
+        "Sub-Saharan Africa": LOCATION_COLOURS["Sub-Saharan Africa"],
       },
       {
         name: "university-study",
@@ -256,9 +256,8 @@ class DotMatrix {
       .attr("transform", (d, i) => {
         const x = (i % itemsPerRow) * itemWidth;
         const y = Math.floor(i / itemsPerRow) * itemHeight;
-        return `translate(${x + vis.config.margin.left}, ${
-          y + vis.config.height
-        })`;
+        return `translate(${x + vis.config.margin.left}, ${y + vis.config.height
+          })`;
       });
     legendItemsEnter
       .merge(legendItems)
