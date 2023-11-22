@@ -8,7 +8,7 @@ class BubbleChart {
       this.config = {
         parentElement: _config.parentElement,
         containerWidth: 800,
-        containerHeight: 570,
+        containerHeight: 580,
         tooltipPadding: 15,
         margin: {
           top: 50,
@@ -46,10 +46,10 @@ class BubbleChart {
         .range([5, 90]);
       
       // Initialize categorical color scale
-      const legendData = ['Helpful_Online_Resources','Helpful_Podcasts','Helpful_YouTube_Channels', 'Helpful_In_Person_Events'];
+      let colourLegend = { ... LEARNING_RESOURCES_COLOURS}
       vis.colorScale = d3.scaleOrdinal()
-        .range(['#e5d8bd', '#fed9a6', '#f3e5ab', '#ccebc5'])
-        .domain(legendData);
+        .range(Object.values(colourLegend))
+        .domain(Object.keys(colourLegend));
 
       // Initialize legend
       vis.legendArea = vis.svg
@@ -59,7 +59,7 @@ class BubbleChart {
       
       vis.legend = vis.legendArea
         .selectAll(".legend")
-        .data(legendData)
+        .data(Object.keys(colourLegend))
         .enter()
         .append('g')
         .attr('class', 'legend')
@@ -202,7 +202,7 @@ class BubbleChart {
       // Render text on the circle
       const circleLabel = vis.chartArea
         .selectAll(".circle-label")
-        .data(vis.transformedData.filter(d => d.count > 30))
+        .data(vis.transformedData)
         .join('text')
         .attr('class', 'circle-label')
         .attr('text-anchor', 'middle')
@@ -234,8 +234,7 @@ class BubbleChart {
         }
       });
 
-      // Todo: when click on legend, just show circles of that colour 
-      // Todo: Interactivity with motivations map: filters the dataset to only contain that
+      // Todo: when click on legend, just show circles of that colour
     
     }
 
