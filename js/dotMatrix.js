@@ -1,3 +1,6 @@
+// TODO: update constants
+// TODO: sort legend items based on color, alphabetically
+
 const AGGREGATED_CATEGORY_LOOKUP = {
   Science: [
     "A social science (e.g., sociology, psychology, political science, economics)",
@@ -33,8 +36,8 @@ class DotMatrix {
   constructor(_config, data, careerDispatch) {
     this.config = {
       parentElement: _config.parentElement,
-      containerWidth: 800,
-      containerHeight: 500,
+      containerWidth: 650,
+      containerHeight: 600,
       tooltipPadding: 15,
       margin: {
         top: 50,
@@ -67,10 +70,12 @@ class DotMatrix {
       },
       {
         name: "location",
-        "Latin America and Caribbean": LOCATION_COLOURS["Latin America and Caribbean"],
+        "Latin America and Caribbean":
+          LOCATION_COLOURS["Latin America and Caribbean"],
         "East Asia and Pacific": LOCATION_COLOURS["East Asia and Pacific"],
         "Europe and Central Asia": LOCATION_COLOURS["Europe and Central Asia"],
-        "Middle East and North Africa": LOCATION_COLOURS["Middle East and North Africa"],
+        "Middle East and North Africa":
+          LOCATION_COLOURS["Middle East and North Africa"],
         "North America": LOCATION_COLOURS["North America"],
         "South Asia": LOCATION_COLOURS["South Asia"],
         "Southeast Asia": LOCATION_COLOURS["Southeast Asia"],
@@ -190,16 +195,16 @@ class DotMatrix {
     const dots = vis.matrixArea.selectAll(".dot").data(vis.data, (d) => d.ID);
     dots.exit().remove();
     const dotsEnter = dots.enter().append("circle").attr("class", "dot");
-
+    let lastDotYPos = 0;
     dotsEnter
       .merge(dots)
       .attr("cx", (d, i) => (i % DOTS_PER_ROW) * DOT_UNIT + ROW_OFFSET)
       .attr("cy", (d, i) => {
-        return (
+        lastDotYPos =
           Math.floor(i / DOTS_PER_ROW) * DOT_UNIT +
           vis.config.margin.top +
-          CIRCLE_RADIUS
-        );
+          CIRCLE_RADIUS;
+        return lastDotYPos;
       })
       .attr("r", (d) => CIRCLE_RADIUS)
       .attr("fill", (d) => vis.renderBasedOnSort(d, vis.activeSort))
@@ -252,13 +257,19 @@ class DotMatrix {
     const legendItemsEnter = legendItems
       .enter()
       .append("g")
-      .attr("class", "legend-item")
-      .attr("transform", (d, i) => {
-        const x = (i % itemsPerRow) * itemWidth;
-        const y = Math.floor(i / itemsPerRow) * itemHeight;
-        return `translate(${x + vis.config.margin.left}, ${y + vis.config.height
-          })`;
-      });
+      .attr("class", "legend-item");
+
+    legendItemsEnter.merge(legendItems).attr("transform", (d, i) => {
+      const x = (i % itemsPerRow) * itemWidth;
+      const y = Math.floor(i / itemsPerRow) * itemHeight;
+      return `translate(${x + vis.config.margin.left}, ${
+        y +
+        Math.max(
+          lastDotYPos + 50,
+          vis.config.height - vis.config.margin.bottom - 80
+        )
+      })`;
+    });
     legendItemsEnter
       .merge(legendItems)
       .append("circle")

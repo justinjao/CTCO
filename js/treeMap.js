@@ -169,7 +169,8 @@ class TreeMap {
       })
       .style("stroke", (d) =>
         d.data[0] === vis.selectedReason ? "purple" : "transparent"
-      );
+      )
+      .style("cursor", "pointer");
 
     // Add labels to the rectangles
     vis.treemapGroup
@@ -183,12 +184,19 @@ class TreeMap {
       .attr("y", (d) => (d.y0 + d.y1) / 2)
       .style("font-size", "10.5px")
       .style("fill", "black")
+      .style("cursor", "pointer")
       .style("text-anchor", "middle")
       .style("dominant-baseline", "middle")
+      .on("click", function (e, d) {
+        console.log("dispatch ", vis);
+        vis.selectedReason = d.data[0];
+        vis.dispatch.call("ReasonChanged", e, d.data);
+        vis.renderVis();
+      })
       .call(vis.wrap, 95);
   }
 
-  // Text wrapping function
+  // Text wrapping function with ChatGPT's assistance
   wrap(text, width) {
     text.each(function () {
       var text = d3.select(this),
