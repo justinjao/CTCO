@@ -176,6 +176,10 @@ class SankeyChart {
             .attr("stroke", d => vis.colourScale(d.source.name))
             .attr("stroke-width", d => Math.max(1, d.width));
 
+        vis.svg.selectAll(".links")
+            .join("title")
+            .text(d => `${d.source.name} → ${d.target.name}\n${d.value}`);
+
         // Adds labels on the nodes.
         vis.svg.selectAll(".node-labels")
             .data(vis.nodes)
@@ -185,7 +189,8 @@ class SankeyChart {
             .attr("y", d => (d.y1 + d.y0) / 2)
             .attr("dy", "0.35em")
             .attr("text-anchor", d => d.x0 < vis.config.width / 2 ? "start" : "end")
-            .text(d => d.name);
+            .text(d => d.name + ": " + d.value)
+
     }
 
 }
