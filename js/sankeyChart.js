@@ -185,7 +185,7 @@ class SankeyChart {
             .attr("y", d => (d.y1 + d.y0) / 2)
             .attr("dy", "0.35em")
             .attr("text-anchor", d => d.x0 < vis.config.width / 2 ? "start" : "end")
-            .text(d => d.name);
+            .text(d => d.name + ": " + d.value);
     }
 
 }
