@@ -18,6 +18,7 @@ class TreeMap {
       },
     };
     this.data = data;
+    this.selectedReason = "To start your first career";
     this.dispatch = filterDispatch;
     this.initVis();
   }
@@ -68,30 +69,44 @@ class TreeMap {
       .attr("x", vis.config.margin.left + xCenter)
       .attr("y", vis.config.margin.top + yCenter);
 
+    // asked ChatGPT to calculate the area for each based on the percentage given
     vis.treeDims = [
-      ["To succeed in current career", 159.2, { x: 0, y: 0 }, "#cccccc"],
-      ["To start your first career", 105.26, { x: 0, y: 63.49 }, "#b3cde3"],
-      ["To change careers", 225.3, { x: 0, y: 168.75 }, "#ccebc5"],
-      [
-        "To start a business or to freelance",
-        80.0,
-        { x: 0, y: 394.05 },
-        "#decbe4",
-      ],
-      ["As a hobby", 59.84, { x: 168.75, y: 0 }, "#fed9a6"],
-      [
-        "To create art or entertainment",
-        24.49,
-        { x: 168.75, y: 59.84 },
-        "#ffffcc",
-      ],
-      [
-        "To meet school requirements",
-        21.74,
-        { x: 168.75, y: 84.33 },
-        "#e5d8bd",
-      ],
+      ["To succeed in current career", 187, "#cccccc"],
+      ["To start your first career", 500, "#b3cde3"],
+      ["To change careers", 766, "#ccebc5"],
+      ["To start a business or to freelance", 238, "#decbe4"],
+      ["As a hobby", 280, "#fed9a6"],
+      ["To create art or entertainment", 29, "#ffffcc"],
+      ["To meet school requirements", 24, "#e5d8bd"],
     ];
+
+    // Sort the treeDims array by the size (the second element of each sub-array) in descending order
+    vis.treeDims.sort((a, b) => b[1] - a[1]);
+
+    // Create an SVG group element for the treemap
+    vis.treemapGroup = vis.treeArea.append("g");
+
+    // Define the desired x and y coordinates for the treeGroup within the treeArea
+    const treeGroupX = 50; // Adjust as needed
+    const treeGroupY = 50; // Adjust as needed
+
+    // Translate the treeGroup to the desired position
+    vis.treemapGroup.attr(
+      "transform",
+      `translate(${treeGroupX}, ${treeGroupY})`
+    );
+
+    // Initialize the treemap layout
+    const treemap = d3.treemap().size([vis.config.width, vis.config.height]);
+
+    // Convert the treeDims array into hierarchical data
+    vis.hierarchy = d3.hierarchy({
+      children: vis.treeDims.map((d, i) => ({ ...d, id: i })),
+    });
+
+    // Compute the treemap layout
+    vis.hierarchy.sum((d) => d[1]);
+    treemap(vis.hierarchy);
 
     vis.updateVis();
   }
@@ -123,44 +138,23 @@ class TreeMap {
   renderVis() {
     let vis = this;
 
-    // Sort the treeDims array by the size (the second element of each sub-array) in descending order
-    vis.treeDims.sort((a, b) => b[1] - a[1]);
+    const rectangles = vis.treemapGroup
+      .selectAll(".tree-node")
+      .data(vis.hierarchy.leaves(), (d) => d.data[0]);
 
-    // Create an SVG group element for the treemap
-    const treemapGroup = vis.treeArea.append("g");
-
-    // Define the desired x and y coordinates for the treeGroup within the treeArea
-    const treeGroupX = 50; // Adjust as needed
-    const treeGroupY = 50; // Adjust as needed
-
-    // Translate the treeGroup to the desired position
-    treemapGroup.attr("transform", `translate(${treeGroupX}, ${treeGroupY})`);
-
-    // Initialize the treemap layout
-    const treemap = d3.treemap().size([vis.config.width, vis.config.height]);
-
-    // Convert the treeDims array into hierarchical data
-    const hierarchy = d3.hierarchy({
-      children: vis.treeDims.map((d, i) => ({ ...d, id: i })),
-    });
-
-    // Compute the treemap layout
-    hierarchy.sum((d) => d[1]);
-    treemap(hierarchy);
-
-    const rectangles = treemapGroup
-      .selectAll(".tree-nodes")
-      .data(hierarchy.leaves())
+    const newRectangles = rectangles
       .enter()
       .append("rect")
+      .attr("class", "tree-node")
       .attr("width", (d) => d.x1 - d.x0)
       .attr("height", (d) => d.y1 - d.y0)
-      .attr("fill", (d) => d.data[3])
+      .attr("fill", (d) => d.data[2])
       .attr("x", (d) => d.x0)
       .attr("y", (d) => d.y0);
 
     // Add black outline when hovering over the tree rectangles
     rectangles
+      .merge(newRectangles)
       .on("mouseover", function () {
         d3.select(this).attr("stroke", "black").attr("stroke-width", 2);
       })
@@ -169,27 +163,30 @@ class TreeMap {
       })
       .on("click", function (e, d) {
         console.log("dispatch ", vis);
+        vis.selectedReason = d.data[0];
         vis.dispatch.call("ReasonChanged", e, d.data);
-      });
+        vis.renderVis();
+      })
+      .style("stroke", (d) =>
+        d.data[0] === vis.selectedReason ? "purple" : "transparent"
+      );
 
     // Add labels to the rectangles
-    treemapGroup
+    vis.treemapGroup
       .selectAll(".tree-label")
-      .data(hierarchy.leaves())
+      .data(vis.hierarchy.leaves())
       .enter()
       .append("text")
       .attr("class", "tree-label")
       .text((d) => d.data[0])
       .attr("x", (d) => (d.x0 + d.x1) / 2)
       .attr("y", (d) => (d.y0 + d.y1) / 2)
-      .style("font-size", "12px")
+      .style("font-size", "10.5px")
       .style("fill", "black")
       .style("text-anchor", "middle")
       .style("dominant-baseline", "middle")
       .call(vis.wrap, 95);
   }
-
-  // TODO: add selection state
 
   // Text wrapping function
   wrap(text, width) {
