@@ -69,7 +69,7 @@ class TreeMap {
       .attr("x", vis.config.margin.left + xCenter)
       .attr("y", vis.config.margin.top + yCenter);
 
-    // asked ChatGPT to calculate the area for each based on the percentage given
+    // used D3 rollups to find count of each
     vis.treeDims = [
       ["To succeed in current career", 187, "#cccccc"],
       ["To start your first career", 500, "#b3cde3"],
