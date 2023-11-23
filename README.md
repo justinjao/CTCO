@@ -1,4 +1,6 @@
-# D3 Project Starter Template
+# Cracking the Coding Odyssey
+
+A data visualization project to explore the 2021 FreeCodeCamp New Programmers Dataset. We visualize how people are learning to code, and what their aspirations are.
 
 ### External References
 
