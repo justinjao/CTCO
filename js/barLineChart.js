@@ -62,7 +62,10 @@ class BarLineChart {
       .attr("transform", `translate(0, ${vis.height})`);
 
     // Append y-axis left group
-    vis.yAxisLeftG = vis.chart.append("g").attr("class", "axis y-axis-left").attr("transform", "translate(0.5, 0)");
+    vis.yAxisLeftG = vis.chart
+      .append("g")
+      .attr("class", "axis y-axis-left")
+      .attr("transform", "translate(0.5, 0)");
 
     // Append y-axis right group
     vis.yAxisRightG = vis.chart
@@ -180,9 +183,9 @@ class BarLineChart {
 
       // tendy addition: career dispatch
       .attr("stroke", (d) =>
-        d.key === vis.selectedCareer ? "pink" : undefined
+        d.key === vis.selectedCareer ? "black" : undefined
       )
-      .attr("stroke-width", 5)
+      .attr("stroke-width", 1.5)
       .on("click", (e, d) => {
         console.log("bar clicked", d);
         let newCareer = undefined;

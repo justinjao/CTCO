@@ -186,7 +186,7 @@ class TreeMap {
         d3.select(this).attr("stroke", "none"); // Remove the outline on mouseout
       })
       .style("stroke", (d) =>
-        d.data[0] === vis.selectedReason ? "purple" : "transparent"
+        d.data[0] === vis.selectedReason ? "black" : "transparent"
       )
       .style("cursor", "pointer");
 
