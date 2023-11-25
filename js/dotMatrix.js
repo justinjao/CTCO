@@ -213,10 +213,16 @@ class DotMatrix {
       })
       .attr("r", (d) => CIRCLE_RADIUS)
       .attr("fill", (d) => vis.renderBasedOnSort(d, vis.activeSort))
+      .style("opacity", (d) =>
+        vis.selectedCareer && d.Interested_Careers !== vis.selectedCareer
+          ? "0.4"
+          : "1"
+      )
       .style("stroke", "black")
-      .style("stroke-width", 0.5)
+      .style("stroke-width", (d) =>
+        d.Interested_Careers === vis.selectedCareer ? 1.5 : 0.5
+      )
       .on("mouseover", (event, d) => {
-        console.log("MOUSE OVER");
         d3
           .select("#tooltip")
           .style("display", "block")
@@ -292,9 +298,6 @@ class DotMatrix {
 
   renderBasedOnSort(d, sort) {
     let vis = this;
-    if (vis.selectedCareer && d.Interested_Careers !== vis.selectedCareer) {
-      return "#CCCCCC";
-    }
     if (sort === "gender") {
       const perception = d.Self_Perception;
       return vis.activeLegend[perception];
