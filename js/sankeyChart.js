@@ -192,6 +192,38 @@ class SankeyChart {
             .attr("text-anchor", d => d.x0 < vis.config.width / 2 ? "start" : "end")
             .text(d => d.name + ": " + d.value)
 
+        console.log(vis.nodes)
+        console.log(vis.links)
+        vis.svg.selectAll(".nodes")
+            .on("mouseover", function (sourceNode) {
+                // Highlight all paths from the source node
+                vis.svg.selectAll(".links")
+                    .filter(function (path) {
+                        console.log("hehe")
+                        console.log(path.source.name)
+                        console.log(sourceNode)
+                        return path.source.name === sourceNode.target.__data__.name || path.target.name === sourceNode.target.__data__.name;
+                    })
+                    .transition()
+                    .style("stroke-opacity", 0.8)
+                // .style("stroke", "blue"); // Change the color as desired
+
+                // // Dim the other paths
+                vis.svg.selectAll(".links")
+                    .filter(function (otherPath) {
+                        return otherPath.source.name !== sourceNode.target.__data__.name && otherPath.target.name !== sourceNode.target.__data__.name;
+                    })
+                    .transition()
+                    .style("stroke-opacity", 0.1)
+                // .style("stroke", "grey"); // Change the color as desired
+            })
+            .on("mouseleave", function () {
+                // Restore the original styles on mouseout
+                vis.svg.selectAll(".links")
+                    .transition()
+                    .style("stroke-opacity", 0.5)  // Adjust the original opacity value
+                // .style("stroke", "black");     // Adjust the original stroke color
+            });
     }
 
 }
