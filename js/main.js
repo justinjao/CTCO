@@ -26,10 +26,7 @@ d3.csv("data/2021CoderFiltered.csv").then((data) => {
 
   const filterDispatch = d3.dispatch("ReasonChanged");
   const careerDispatch = d3.dispatch("CareerChanged");
-  // default
-  const filteredData = data.filter(
-    (d) => d.Top_Reason === "To start your first career"
-  );
+  const filteredData = data;
   const dotMatrix = new DotMatrix(
     {
       parentElement: "#matrix",
@@ -47,8 +44,7 @@ d3.csv("data/2021CoderFiltered.csv").then((data) => {
   );
 
   filterDispatch.on("ReasonChanged", function (f, e) {
-    console.log("FILTER CHANGED ", f[0]);
-    const newFilteredData = data.filter((d) => d.Top_Reason === f[0]);
+    const newFilteredData = f ? data.filter((d) => d.Top_Reason === f) : data;
     console.log("data filtered ", newFilteredData);
     dotMatrix.data = newFilteredData;
     dotMatrix.updateVis();

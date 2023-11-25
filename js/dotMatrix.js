@@ -1,5 +1,5 @@
 // TODO: update constants
-// TODO: sort legend items based on color, alphabetically
+// TODO: sort legend items based on color
 
 const AGGREGATED_CATEGORY_LOOKUP = {
   Science: [
@@ -26,6 +26,8 @@ const AGGREGATED_CATEGORY_LOOKUP = {
   ],
   Other: ["I didn't attend a university", "Undecided or no major"],
 };
+
+const MAX_BIG_SIZE = 768;
 
 class DotMatrix {
   /**
@@ -185,16 +187,19 @@ class DotMatrix {
     };
 
     let vis = this;
-    const CIRCLE_RADIUS = 6;
+    const CIRCLE_RADIUS = vis.data.length < MAX_BIG_SIZE ? 6 : 4;
     const CIRCLE_DIAM = 2 * CIRCLE_RADIUS;
-    const CIRCLE_SPACING = 5;
+    const CIRCLE_SPACING = vis.data.length < MAX_BIG_SIZE ? 5 : 2;
     const DOT_UNIT = CIRCLE_DIAM + CIRCLE_SPACING;
     const DOTS_PER_ROW = Math.floor(vis.config.width / DOT_UNIT);
     const ROW_OFFSET = vis.config.margin.left + CIRCLE_RADIUS;
 
     const dots = vis.matrixArea.selectAll(".dot").data(vis.data, (d) => d.ID);
     dots.exit().remove();
-    const dotsEnter = dots.enter().append("circle").attr("class", "dot");
+    const dotsEnter = dots
+      .enter()
+      .append("circle")
+      .attr("class", (d, i) => `dot d-${i}`);
     let lastDotYPos = 0;
     dotsEnter
       .merge(dots)
@@ -208,10 +213,16 @@ class DotMatrix {
       })
       .attr("r", (d) => CIRCLE_RADIUS)
       .attr("fill", (d) => vis.renderBasedOnSort(d, vis.activeSort))
+      .style("opacity", (d) =>
+        vis.selectedCareer && d.Interested_Careers !== vis.selectedCareer
+          ? "0.4"
+          : "1"
+      )
       .style("stroke", "black")
-      .style("stroke-width", 0.5)
+      .style("stroke-width", (d) =>
+        d.Interested_Careers === vis.selectedCareer ? 1.5 : 0.5
+      )
       .on("mouseover", (event, d) => {
-        console.log("MOUSE OVER");
         d3
           .select("#tooltip")
           .style("display", "block")
@@ -252,7 +263,7 @@ class DotMatrix {
 
     // Calculate the width and height of each item based on DOT_UNIT
     const itemWidth = vis.config.width / itemsPerRow;
-    const itemHeight = DOT_UNIT;
+    const itemHeight = 17;
 
     const legendItemsEnter = legendItems
       .enter()
@@ -271,14 +282,13 @@ class DotMatrix {
       })`;
     });
     legendItemsEnter
-      .merge(legendItems)
       .append("circle")
-      .attr("r", CIRCLE_RADIUS)
+      .attr("r", 6)
       .attr("fill", (d) => vis.activeLegend[d])
       .style("stroke", "black")
       .style("stroke-width", 0.5);
     legendItemsEnter
-      .merge(legendItems)
+
       .append("text")
       .text((d) => d)
       .attr("color", "black")
@@ -288,9 +298,6 @@ class DotMatrix {
 
   renderBasedOnSort(d, sort) {
     let vis = this;
-    if (vis.selectedCareer && d.Interested_Careers !== vis.selectedCareer) {
-      return "#999";
-    }
     if (sort === "gender") {
       const perception = d.Self_Perception;
       return vis.activeLegend[perception];
