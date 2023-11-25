@@ -66,7 +66,8 @@ class TreeMap {
       .attr("height", vis.config.height)
       .attr("class", "tree-area")
       .attr("x", vis.config.margin.left + xCenter)
-      .attr("y", vis.config.margin.top + yCenter);
+      .attr("y", vis.config.margin.top + yCenter)
+      .style("fill", "white");
 
     // used D3 rollups to find count of each
     vis.treeDims = [
@@ -104,7 +105,7 @@ class TreeMap {
     });
 
     // Compute the treemap layout
-    vis.hierarchy.sum((d) => d[1]);
+    vis.hierarchy.sum((d) => d[1] + 50);
     treemap(vis.hierarchy);
 
     vis.updateVis();
@@ -169,8 +170,8 @@ class TreeMap {
       .enter()
       .append("rect")
       .attr("class", "tree-node")
-      .attr("width", (d) => d.x1 - d.x0)
-      .attr("height", (d) => d.y1 - d.y0)
+      .attr("width", (d) => d.x1 - d.x0 - 5)
+      .attr("height", (d) => d.y1 - d.y0 - 5)
       .attr("fill", (d) => d.data[2])
       .attr("x", (d) => d.x0)
       .attr("y", (d) => d.y0);
@@ -201,14 +202,14 @@ class TreeMap {
       .append("text")
       .attr("class", "tree-label")
       .text((d) => d.data[0])
-      .attr("x", (d) => (d.x0 + d.x1) / 2)
-      .attr("y", (d) => (d.y0 + d.y1) / 2)
+      .attr("x", (d) => (d.x0 + d.x1 - 5) / 2)
+      .attr("y", (d) => (d.y0 + d.y1 - 5) / 2)
       .style("font-size", "10.5px")
       .style("fill", "black")
       .style("cursor", "pointer")
       .style("text-anchor", "middle")
       .style("dominant-baseline", "middle")
-      .call(vis.wrap, 95);
+      .call(vis.wrap, 80);
   }
 
   // Text wrapping function with ChatGPT's assistance
