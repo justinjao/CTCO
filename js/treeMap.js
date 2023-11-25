@@ -18,7 +18,6 @@ class TreeMap {
       },
     };
     this.data = data;
-    this.selectedReason = "To start your first career";
     this.dispatch = filterDispatch;
     this.initVis();
   }
@@ -84,7 +83,7 @@ class TreeMap {
     vis.treeDims.sort((a, b) => b[1] - a[1]);
 
     // Create an SVG group element for the treemap
-    vis.treemapGroup = vis.treeArea.append("g");
+    vis.treemapGroup = vis.treeArea.append("g").attr("class", "tree-map-group");
 
     // Define the desired x and y coordinates for the treeGroup within the treeArea
     const treeGroupX = 50; // Adjust as needed
@@ -138,9 +137,33 @@ class TreeMap {
   renderVis() {
     let vis = this;
 
-    const rectangles = vis.treemapGroup
-      .selectAll(".tree-node")
+    const rectangleGroups = vis.treemapGroup
+      .selectAll(".tree-node-group")
       .data(vis.hierarchy.leaves(), (d) => d.data[0]);
+    const newRectangleGroups = rectangleGroups
+      .enter()
+      .append("g")
+      .attr("class", "tree-node-group");
+    rectangleGroups.exit().remove();
+
+    newRectangleGroups.merge(rectangleGroups).on("click", function (e, d) {
+      if (vis.selectedReason !== d.data[0]) {
+        vis.selectedReason = d.data[0];
+      } else {
+        vis.selectedReason = undefined;
+      }
+
+      vis.dispatch.call("ReasonChanged", e, vis.selectedReason);
+      vis.renderVis();
+    });
+
+    const rectangles = newRectangleGroups
+      .merge(rectangleGroups)
+      .selectAll(".tree-node")
+      .data(
+        (d) => d,
+        (d) => d.data[0]
+      );
 
     const newRectangles = rectangles
       .enter()
@@ -161,21 +184,19 @@ class TreeMap {
       .on("mouseout", function () {
         d3.select(this).attr("stroke", "none"); // Remove the outline on mouseout
       })
-      .on("click", function (e, d) {
-        console.log("dispatch ", vis);
-        vis.selectedReason = d.data[0];
-        vis.dispatch.call("ReasonChanged", e, d.data);
-        vis.renderVis();
-      })
       .style("stroke", (d) =>
         d.data[0] === vis.selectedReason ? "purple" : "transparent"
       )
       .style("cursor", "pointer");
 
     // Add labels to the rectangles
-    vis.treemapGroup
+    newRectangleGroups
+      .merge(rectangleGroups)
       .selectAll(".tree-label")
-      .data(vis.hierarchy.leaves())
+      .data(
+        (d) => d,
+        (d) => d.data[0]
+      )
       .enter()
       .append("text")
       .attr("class", "tree-label")
@@ -187,12 +208,6 @@ class TreeMap {
       .style("cursor", "pointer")
       .style("text-anchor", "middle")
       .style("dominant-baseline", "middle")
-      .on("click", function (e, d) {
-        console.log("dispatch ", vis);
-        vis.selectedReason = d.data[0];
-        vis.dispatch.call("ReasonChanged", e, d.data);
-        vis.renderVis();
-      })
       .call(vis.wrap, 95);
   }
 
@@ -233,17 +248,3 @@ class TreeMap {
     });
   }
 }
-
-//   renderVis() {
-//     let vis = this;
-//     const nodes = vis.treeArea.selectAll(".tree-nodes").data(vis.treeDims);
-//     nodes
-//       .enter()
-//       .append("rect")
-//       .attr("width", (d) => d[1])
-//       .attr("height", (d) => d[1])
-//       .attr("fill", (d) => d[3])
-//       .attr("x", (d) => vis.config.margin.left + d[2].x)
-//       .attr("y", (d) => vis.config.margin.top + d[2].y);
-//   }
-// }

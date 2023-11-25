@@ -1,5 +1,5 @@
 // TODO: update constants
-// TODO: sort legend items based on color, alphabetically
+// TODO: sort legend items based on color
 
 const AGGREGATED_CATEGORY_LOOKUP = {
   Science: [
@@ -289,7 +289,7 @@ class DotMatrix {
   renderBasedOnSort(d, sort) {
     let vis = this;
     if (vis.selectedCareer && d.Interested_Careers !== vis.selectedCareer) {
-      return "#999";
+      return "#CCCCCC";
     }
     if (sort === "gender") {
       const perception = d.Self_Perception;
