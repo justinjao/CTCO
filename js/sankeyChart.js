@@ -12,7 +12,7 @@ class SankeyChart {
             tooltipPadding: 15,
             margin: {
                 top: 50,
-                right: 50,
+                right: 100,
                 bottom: 50,
                 left: 50,
             },
@@ -48,7 +48,8 @@ class SankeyChart {
             .append("svg")
             .attr("id", "sankey")
             .attr("width", vis.config.width)
-            .attr("height", vis.config.height);
+            .attr("height", vis.config.height)
+            .attr('transform', `translate(${vis.config.margin.left},0)`);;
 
         // Constructs and configures a Sankey generator.
         vis.sankey = d3.sankey()
