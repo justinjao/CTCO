@@ -7,7 +7,7 @@ class BubbleChart {
     constructor(_config, data) {
       this.config = {
         parentElement: _config.parentElement,
-        containerWidth: 800,
+        containerWidth: 750,
         containerHeight: 580,
         tooltipPadding: 15,
         margin: {
