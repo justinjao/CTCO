@@ -54,7 +54,8 @@ class SankeyChart {
         // Constructs and configures a Sankey generator.
         vis.sankey = d3.sankey()
             .nodeId(d => d.index)
-            .nodeAlign(d3.sankeyLeft)
+            .nodeSort(vis.costOfLearningSort)
+            .nodeAlign(d3.sankeyRight)
             .nodeWidth(15)
             .nodePadding(15)
             .extent([[1, 5], [vis.config.width - 1, vis.config.height - 5]]);
@@ -126,6 +127,7 @@ class SankeyChart {
             links: vis.graph.links.map(d => Object.assign({}, d))
         });
 
+        console.log(vis.sankey.nodeSort(this.costOfLearningSort))
         vis.nodes = nodes;
         vis.links = links;
 
@@ -206,7 +208,6 @@ class SankeyChart {
                     })
                     .transition()
                     .style("stroke-opacity", 0.8)
-                // .style("stroke", "blue"); // Change the color as desired
 
                 // // Dim the other paths
                 vis.svg.selectAll(".links")
@@ -215,15 +216,26 @@ class SankeyChart {
                     })
                     .transition()
                     .style("stroke-opacity", 0.1)
-                // .style("stroke", "grey"); // Change the color as desired
             })
             .on("mouseleave", function () {
-                // Restore the original styles on mouseout
+                // Restore the original styles on mouseleave
                 vis.svg.selectAll(".links")
                     .transition()
-                    .style("stroke-opacity", 0.5)  // Adjust the original opacity value
-                // .style("stroke", "black");     // Adjust the original stroke color
+                    .style("stroke-opacity", 0.5)
             });
+    }
+
+    costOfLearningSort(a, b) {
+        var categoryA = a.name;
+        var categoryB = b.name;
+        let costOfLearningOrder = ["$0-100", "$101-500", "$501-1000", "$1001-10000", "$>10000"];
+
+        // Find the index of each category in the desired order array
+        var indexA = costOfLearningOrder.indexOf(categoryA);
+        var indexB = costOfLearningOrder.indexOf(categoryB);
+
+        // Compare the indices to determine the order
+        return indexA - indexB;
     }
 
 }
