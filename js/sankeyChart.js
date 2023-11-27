@@ -54,7 +54,8 @@ class SankeyChart {
         // Constructs and configures a Sankey generator.
         vis.sankey = d3.sankey()
             .nodeId(d => d.index)
-            .nodeAlign(d3.sankeyLeft)
+            .nodeSort(vis.costOfLearningSort)
+            .nodeAlign(d3.sankeyRight)
             .nodeWidth(15)
             .nodePadding(15)
             .extent([[1, 5], [vis.config.width - 1, vis.config.height - 5]]);
@@ -126,6 +127,7 @@ class SankeyChart {
             links: vis.graph.links.map(d => Object.assign({}, d))
         });
 
+        console.log(vis.sankey.nodeSort(this.costOfLearningSort))
         vis.nodes = nodes;
         vis.links = links;
 
@@ -192,6 +194,48 @@ class SankeyChart {
             .attr("text-anchor", d => d.x0 < vis.config.width / 2 ? "start" : "end")
             .text(d => d.name + ": " + d.value)
 
+        console.log(vis.nodes)
+        console.log(vis.links)
+        vis.svg.selectAll(".nodes")
+            .on("mouseover", function (sourceNode) {
+                // Highlight all paths from the source node
+                vis.svg.selectAll(".links")
+                    .filter(function (path) {
+                        console.log("hehe")
+                        console.log(path.source.name)
+                        console.log(sourceNode)
+                        return path.source.name === sourceNode.target.__data__.name || path.target.name === sourceNode.target.__data__.name;
+                    })
+                    .transition()
+                    .style("stroke-opacity", 0.8)
+
+                // // Dim the other paths
+                vis.svg.selectAll(".links")
+                    .filter(function (otherPath) {
+                        return otherPath.source.name !== sourceNode.target.__data__.name && otherPath.target.name !== sourceNode.target.__data__.name;
+                    })
+                    .transition()
+                    .style("stroke-opacity", 0.1)
+            })
+            .on("mouseleave", function () {
+                // Restore the original styles on mouseleave
+                vis.svg.selectAll(".links")
+                    .transition()
+                    .style("stroke-opacity", 0.5)
+            });
+    }
+
+    costOfLearningSort(a, b) {
+        var categoryA = a.name;
+        var categoryB = b.name;
+        let costOfLearningOrder = ["$0-100", "$101-500", "$501-1000", "$1001-10000", "$>10000"];
+
+        // Find the index of each category in the desired order array
+        var indexA = costOfLearningOrder.indexOf(categoryA);
+        var indexB = costOfLearningOrder.indexOf(categoryB);
+
+        // Compare the indices to determine the order
+        return indexA - indexB;
     }
 
 }
