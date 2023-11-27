@@ -136,6 +136,7 @@ class BarLineChart {
 
     const careerSalaryMap = [];
 
+    // Pre-process data
     for (const [career, data] of aggregatedData) {
       const salaryMap = d3.rollup(
         data,
@@ -154,11 +155,13 @@ class BarLineChart {
       careerSalaryMap.push([career, salaryKey]);
     }
 
+    // Prepare career count data
     vis.aggregatedData = Array.from(aggregatedData, ([key, value]) => ({
       key,
       value,
     }));
 
+    // Prepare career salary data
     vis.careerSalaryMap = Array.from(careerSalaryMap, ([key, value]) => ({
       key,
       value,
@@ -193,17 +196,10 @@ class BarLineChart {
       .join("rect")
       .attr("class", "bar")
       .on("click", (event, d) => {
-        let newCareer = undefined;
-        if (d.key !== vis.selectedCareer) {
-          newCareer = d.key;
-        }
-        vis.dispatcher.call("CareerChanged", event, newCareer);
+        const career = d.key === vis.selectedCareer ? undefined : d.key;
+        vis.dispatcher.call("CareerChanged", event, career);
       })
-
-      // tendy addition: career dispatch
-      .attr("stroke", (d) =>
-        d.key === vis.selectedCareer ? "black" : undefined
-      )
+      .attr("stroke", (d) => (d.key === vis.selectedCareer ? "black" : "unset"))
       .attr("stroke-width", 1.5)
       .transition()
       .duration(500)
@@ -212,6 +208,7 @@ class BarLineChart {
       .attr("height", (d) => vis.height - vis.yScaleLeft(vis.yValueLeft(d)))
       .attr("y", (d) => vis.yScaleLeft(vis.yValueLeft(d)));
 
+    // Add lines
     const lines = vis.marks
       .selectAll(".chart-line")
       .data([vis.careerSalaryMap])

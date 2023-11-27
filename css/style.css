@@ -42,6 +42,12 @@ h3 {
   fill: #ccebc5;
 }
 
+.bar:hover {
+  cursor: pointer;
+  stroke: #000;
+  stroke-width: 1.5px;
+}
+
 .y-axis-left {
   color: #93d585;
   font-weight: bolder;
