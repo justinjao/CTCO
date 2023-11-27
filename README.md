@@ -8,6 +8,7 @@ A data visualization project to explore the 2021 FreeCodeCamp New Programmers Da
 - ChatGPT was used for:
   - Data transformations for frequencies in `sankeyChart.js`
   - CostOfLearningBins generation in `main.js`
+  - sorting of CostOfLearningBins in `sankeyChart.js`
   - Countless debugging sessions
   - Layout of legend items for dot matrix
   - Mapping university studies to broader categories for dot matrix
