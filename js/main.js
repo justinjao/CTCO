@@ -14,6 +14,11 @@ d3.csv("data/2021CoderFiltered.csv").then((data) => {
     d.Helpful_Podcasts = d.Helpful_Podcasts.split(", ");
     d.Helpful_YouTube_Channels = d.Helpful_YouTube_Channels.split(", ");
 
+    // Bar line chart preprocessing
+    if (d.Interested_Careers === "I am not interested in a software development career") {
+      d.Interested_Careers = "Not interested in software development";
+    }
+
     // Sankey chart preprocessing: create a new property 'CostOfLearningBins'
     d.CostOfLearningBins = labels.find((label, index) => {
       return (
@@ -48,6 +53,8 @@ d3.csv("data/2021CoderFiltered.csv").then((data) => {
     console.log("data filtered ", newFilteredData);
     dotMatrix.data = newFilteredData;
     dotMatrix.updateVis();
+    barLineChart.data = newFilteredData;
+    barLineChart.updateVis();
     sankeyChart.data = newFilteredData;
     sankeyChart.updateVis();
     bubbleChart.data = newFilteredData;

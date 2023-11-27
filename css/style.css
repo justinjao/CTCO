@@ -39,11 +39,11 @@ h3 {
 
 /* Bar line chart */
 .bar {
-  fill: #b3de69;
+  fill: #ccebc5;
 }
 
 .y-axis-left {
-  color: #b3de69;
+  color: #93d585;
   font-weight: bolder;
 }
 
@@ -52,7 +52,7 @@ h3 {
 }
 
 .axis-title-left {
-  fill: #b3de69;
+  fill: #93d585;
   font-weight: bolder;
 }
 
