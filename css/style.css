@@ -62,6 +62,10 @@ h3 {
   font-weight: bolder;
 }
 
+.axis-title-right {
+  cursor: help;
+}
+
 .dot-matrix-container, .bar-line-chart-container, 
 .bubble-chart-container, .sankey-chart-container {
   flex: 1;

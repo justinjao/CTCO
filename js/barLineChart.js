@@ -103,19 +103,32 @@ class BarLineChart {
       .append("text")
       .attr("class", "axis-title axis-title-left")
       .attr("y", -20)
-      .attr("x", 100)
+      .attr("x", 90)
       .attr("dy", ".71em")
       .style("text-anchor", "end")
-      .text("↑ Number of People");
-
-    vis.chart
+      .text("Number of People");
+    
+      vis.chart
       .append("text")
       .attr("class", "axis-title axis-title-right")
       .attr("y", -20)
-      .attr("x", vis.width + 115)
+      .attr("x", vis.width + 120)
       .attr("dy", ".71em")
       .style("text-anchor", "end")
-      .text("↑ Expected Salary");
+      .text("Expected Salary ⓘ")
+      .on("mouseover", function (event, d) {
+        d3
+          .select("#tooltip")
+          .style("display", "block")
+          .style("max-width", "50px")
+          .style("left", event.pageX + "px")
+          .style("top", event.pageY + "px").html(`
+            <p style="font-size:xx-small">Expected amount of money earned per year from first developer job (in US Dollars)</p>
+          `);
+      })
+      .on("mouseout", function () {
+        d3.select("#tooltip").style("display", "none");
+      });
 
     vis.dispatcher.on("CareerChanged.Bar", (career) => {
       vis.selectedCareer = career;
