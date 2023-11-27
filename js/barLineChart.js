@@ -107,8 +107,8 @@ class BarLineChart {
       .attr("dy", ".71em")
       .style("text-anchor", "end")
       .text("Number of People");
-    
-      vis.chart
+
+    vis.chart
       .append("text")
       .attr("class", "axis-title axis-title-right")
       .attr("y", -20)

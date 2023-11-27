@@ -15,7 +15,10 @@ d3.csv("data/2021CoderFiltered.csv").then((data) => {
     d.Helpful_YouTube_Channels = d.Helpful_YouTube_Channels.split(", ");
 
     // Bar line chart preprocessing
-    if (d.Interested_Careers === "I am not interested in a software development career") {
+    if (
+      d.Interested_Careers ===
+      "I am not interested in a software development career"
+    ) {
       d.Interested_Careers = "Not interested in software development";
     }
 
