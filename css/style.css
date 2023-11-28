@@ -21,6 +21,10 @@ h3 {
   padding: 0 20px;
 }
 
+.career-aspirations {
+  margin-bottom: 0;
+}
+
 .treemap-container {
   padding-top: 1rem;
 }
@@ -46,31 +50,35 @@ h3 {
 }
 
 /* Bar line chart */
-.bar {
-  fill: #ccebc5;
-}
-
 .bar:hover {
   cursor: pointer;
   stroke: #000;
   stroke-width: 1.5px;
 }
 
-.y-axis-left {
-  color: #93d585;
+.y-axis {
   font-weight: bolder;
+}
+
+.y-axis-left {
+  color: #fbb7da;
+}
+
+.y-axis-right {
+  color: #e22c90;
 }
 
 .axis-title {
   font-size: small;
-}
-
-.axis-title-left {
-  fill: #93d585;
   font-weight: bolder;
 }
 
+.axis-title-left {
+  fill: #fbb7da;
+}
+
 .axis-title-right {
+  fill: #e22c90;
   cursor: help;
 }
 
