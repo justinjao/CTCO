@@ -189,7 +189,7 @@ class TreeMap {
         d.data[0] === vis.selectedReason ? "black" : "transparent"
       )
       .style("opacity", (d) => 
-        d.data[0] === vis.selectedReason || !vis.selectedReason ? 1 : 0.6
+        d.data[0] === vis.selectedReason || !vis.selectedReason ? 1 : 0.5
       )
       .style("cursor", "pointer");
 
