@@ -39,7 +39,7 @@ class BubbleChart {
       // SVG group that contains the chart (adjusted to margins)
       vis.chartArea = vis.svg.append('g')
         .attr('class', "bubble-area")
-        .attr('transform', `translate(${vis.config.margin.left},${vis.config.margin.top})`);
+        .attr('transform', `translate(${vis.config.margin.left + 10},${vis.config.margin.top})`);
 
       // Initialize radius scale of circles
       vis.radiusScale = d3.scaleSqrt()
@@ -135,11 +135,14 @@ class BubbleChart {
             increaseCnt(d[key]);
           }
         });
+        // Create a count of total number of items with that category
+        const totalCount = Object.values(keyRes).reduce((total, count) => total + count, 0);
         // Convert result so each item is its own object
         const keyResObj = Object.entries(keyRes).map(([name, count]) => ({
           category: key,
           name: name,
-          count: count
+          count: count,
+          percentage: ((count / totalCount) * 100).toFixed(2)
         }));
         // Concat all item objects to the result array
         vis.transformedData = [...vis.transformedData, ...keyResObj];
@@ -209,21 +212,8 @@ class BubbleChart {
         .attr('fill', "#7f7a7a")
         .attr('font-size', 10)
         .text(d => d.name);
-      
-      // Using simulation, generate each circle data point's x and y pos
-      simulation.on("tick", function () {
-        circle
-          .attr("cx", d => d.x)
-          .attr("cy", d => d.y);
 
-        circleLabel
-          .attr("x", d => d.x)
-          .attr("y", d => d.y)
-          // only show labels that fit the size of circle
-
-      });
-
-      // remove labels that exceed size of circle
+      // Remove labels that exceed size of circle
       circleLabel.style("visibility", function (d) {
         let labelLen = d3.select(this).node().getComputedTextLength();
         let diameter = d.radius * 2;
@@ -234,7 +224,34 @@ class BubbleChart {
         }
       });
 
-      // Todo: when click on legend, just show circles of that colour
+      // Append tspan elements for category and percentage
+      const categorySpan = circleLabel.append('tspan')
+        .text(d => d.category.substring(8).replace(/_/g, ' '));
+
+      const percentSpan = circleLabel
+        .append('tspan')
+        .text(d => d.percentage + " %");
+
+      // Using simulation, generate each circle data point's x and y pos
+      simulation.on("tick", function () {
+        circle
+          .attr("cx", d => d.x)
+          .attr("cy", d => d.y);
+
+        circleLabel
+          .attr("x", d => d.x)
+          .attr("y", d => d.y);
+        
+        categorySpan
+          .attr('x', d => d.x)
+          .attr('y', d => d.y - 10);
+        
+        percentSpan
+          .attr('x', d => d.x)
+          .attr('y', d => d.y + 15);
+
+
+      });
     
     }
 
