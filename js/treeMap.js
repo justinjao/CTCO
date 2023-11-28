@@ -71,13 +71,13 @@ class TreeMap {
 
     // used D3 rollups to find count of each
     vis.treeDims = [
-      ["To succeed in current career", 187, "#cccccc"],
-      ["To start your first career", 500, "#b3cde3"],
-      ["To change careers", 766, "#ccebc5"],
-      ["To start a business or to freelance", 238, "#decbe4"],
-      ["As a hobby", 280, "#fed9a6"],
-      ["To create art or entertainment", 29, "#ffffcc"],
-      ["To meet school requirements", 24, "#e5d8bd"],
+      ["To succeed in current career", 187, "#bebada"],
+      ["To start your first career", 500, "#8dd3c7"],
+      ["To change careers", 766, "#fccde5"],
+      ["To start a business or to freelance", 238, "#b3cde3"],
+      ["As a hobby", 280, "#ccebc5"],
+      ["To create art or entertainment", 29, "#fed9a6"],
+      ["To meet school requirements", 24, "#ffffcc"],
     ];
 
     // Sort the treeDims array by the size (the second element of each sub-array) in descending order
@@ -188,7 +188,7 @@ class TreeMap {
       .style("stroke", (d) =>
         d.data[0] === vis.selectedReason ? "black" : "transparent"
       )
-      .style("opacity", (d) => 
+      .style("opacity", (d) =>
         d.data[0] === vis.selectedReason || !vis.selectedReason ? 1 : 0.5
       )
       .style("cursor", "pointer");
@@ -207,7 +207,7 @@ class TreeMap {
       .text((d) => d.data[0])
       .attr("x", (d) => (d.x0 + d.x1 - 5) / 2)
       .attr("y", (d) => (d.y0 + d.y1 - 5) / 2)
-      .style("font-size", "10.5px")
+      .style("font-size", "11.5px")
       .style("fill", "black")
       .style("cursor", "pointer")
       .style("text-anchor", "middle")
