@@ -37,6 +37,18 @@ h3 {
   fill: transparent;
 }
 
+/* Tree map */
+.tree-node:hover {
+  stroke: #000 !important;
+  stroke-width: 1.5px !important;
+}
+
+/* Dot matrix */
+.dot:hover {
+  stroke: #000 !important;
+  stroke-width: 1.5px !important;
+}
+
 /* Bar line chart */
 .bar {
   fill: #ccebc5;
@@ -45,7 +57,7 @@ h3 {
 .bar:hover {
   cursor: pointer;
   stroke: #000;
-  stroke-width: 1.5px;
+  stroke-width: 15px;
 }
 
 .y-axis-left {
