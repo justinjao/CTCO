@@ -12,24 +12,20 @@ h3 {
 }
 
 /* Layout of visualizations */
-
 .top-row, .middle-row, .bottom-row {
-  /* border-bottom: 1px solid #d3d3d3; */
   display: flex;
 }
 
 .intro {
-  width: 624px;
+  width: 750px;
   padding: 0 20px;
 }
 
 .treemap-container {
-  padding-top: 2rem;
-  padding-left: 8rem;
+  padding-top: 1rem;
 }
 
 .chart-container {
-  /* border: 1px solid #d3d3d3; */
   margin: 0 auto;
 }
 
@@ -78,13 +74,7 @@ h3 {
   cursor: help;
 }
 
-.dot-matrix-container, .bar-line-chart-container, 
-.bubble-chart-container, .sankey-chart-container {
-  flex: 1;
-}
-
 /* Elements in charts */
-
 #dot-matrix-sorting {
   margin-top: 10px;
   text-align: left;

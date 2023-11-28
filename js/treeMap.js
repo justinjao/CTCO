@@ -11,9 +11,9 @@ class TreeMap {
       containerHeight: 500,
       tooltipPadding: 15,
       margin: {
-        top: 50,
-        right: 50,
-        bottom: 50,
+        top: 0,
+        right: 0,
+        bottom: 30,
         left: 50,
       },
     };
@@ -88,7 +88,7 @@ class TreeMap {
 
     // Define the desired x and y coordinates for the treeGroup within the treeArea
     const treeGroupX = 50; // Adjust as needed
-    const treeGroupY = 50; // Adjust as needed
+    const treeGroupY = 0; // Adjust as needed
 
     // Translate the treeGroup to the desired position
     vis.treemapGroup.attr(

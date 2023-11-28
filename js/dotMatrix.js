@@ -39,7 +39,7 @@ class DotMatrix {
     this.config = {
       parentElement: _config.parentElement,
       containerWidth: 650,
-      containerHeight: 600,
+      containerHeight: 510,
       tooltipPadding: 15,
       margin: {
         top: 50,
