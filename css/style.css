@@ -56,16 +56,14 @@ h3 {
   stroke-width: 1.5px;
 }
 
-.y-axis {
-  font-weight: bolder;
-}
-
 .y-axis-left {
   color: #fbb7da;
+  font-weight: bolder;
 }
 
 .y-axis-right {
   color: #e22c90;
+  font-weight: bolder;
 }
 
 .axis-title {

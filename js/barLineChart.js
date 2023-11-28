@@ -84,19 +84,19 @@ class BarLineChart {
     // Append empty x-axis group and move it to the bottom of the chart
     vis.xAxisG = vis.chart
       .append("g")
-      .attr("class", "y-axis x-axis")
+      .attr("class", "axis x-axis")
       .attr("transform", `translate(0, ${vis.height})`);
 
     // Append y-axis left group
     vis.yAxisLeftG = vis.chart
       .append("g")
-      .attr("class", "y-axis y-axis-left")
+      .attr("class", "axis y-axis-left")
       .attr("transform", "translate(0.5, 0)");
 
     // Append y-axis right group
     vis.yAxisRightG = vis.chart
       .append("g")
-      .attr("class", "y-axis y-axis-right")
+      .attr("class", "axis y-axis-right")
       .attr("transform", `translate(${vis.width}, 0)`);
 
     // Append titles
