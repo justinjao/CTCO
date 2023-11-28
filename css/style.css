@@ -57,7 +57,7 @@ h3 {
 .bar:hover {
   cursor: pointer;
   stroke: #000;
-  stroke-width: 15px;
+  stroke-width: 1.5px;
 }
 
 .y-axis-left {
