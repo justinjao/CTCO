@@ -188,6 +188,9 @@ class TreeMap {
       .style("stroke", (d) =>
         d.data[0] === vis.selectedReason ? "black" : "transparent"
       )
+      .style("opacity", (d) => 
+        d.data[0] === vis.selectedReason || !vis.selectedReason ? 1 : 0.6
+      )
       .style("cursor", "pointer");
 
     // Add labels to the rectangles
