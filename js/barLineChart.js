@@ -21,6 +21,7 @@ class BarLineChart {
       parentElement: _config.parentElement,
       containerWidth: 750,
       containerHeight: 500,
+      tooltipPadding: 15,
       margin: {
         top: 50,
         right: 150,
@@ -120,10 +121,9 @@ class BarLineChart {
         d3
           .select("#tooltip")
           .style("display", "block")
-          .style("max-width", "50px")
-          .style("left", event.pageX + "px")
-          .style("top", event.pageY + "px").html(`
-            <p style="font-size:xx-small">Expected amount of money earned per year from first developer job (in US Dollars)</p>
+          .style("left", event.pageX + vis.config.tooltipPadding + "px")
+          .style("top", event.pageY + vis.config.tooltipPadding + "px").html(`
+            <p style="font-size:xx-small; max-width:200px">Expected amount of money earned per year from first developer job (in US Dollars)</p>
           `);
       })
       .on("mouseout", function () {
