@@ -84,19 +84,19 @@ class BarLineChart {
     // Append empty x-axis group and move it to the bottom of the chart
     vis.xAxisG = vis.chart
       .append("g")
-      .attr("class", "axis x-axis")
+      .attr("class", "y-axis x-axis")
       .attr("transform", `translate(0, ${vis.height})`);
 
     // Append y-axis left group
     vis.yAxisLeftG = vis.chart
       .append("g")
-      .attr("class", "axis y-axis-left")
+      .attr("class", "y-axis y-axis-left")
       .attr("transform", "translate(0.5, 0)");
 
     // Append y-axis right group
     vis.yAxisRightG = vis.chart
       .append("g")
-      .attr("class", "axis y-axis-right")
+      .attr("class", "y-axis y-axis-right")
       .attr("transform", `translate(${vis.width}, 0)`);
 
     // Append titles
@@ -214,6 +214,8 @@ class BarLineChart {
       })
       .attr("stroke", (d) => (d.key === vis.selectedCareer ? "black" : "unset"))
       .attr("stroke-width", 1.5)
+      .style("fill", "#fccde5")
+      .style("opacity", (d) => d.key === vis.selectedCareer || !vis.selectedCareer ? 1 : 0.5)
       .transition()
       .duration(500)
       .attr("x", (d) => vis.xScale(vis.xValue(d)))
@@ -228,7 +230,7 @@ class BarLineChart {
       .join("path")
       .attr("class", "chart-line")
       .attr("fill", "none")
-      .attr("stroke", "currentColor")
+      .attr("stroke", "#e0218a")
       .attr("stroke-miterlimit", 1)
       .attr("stroke-width", 2)
       .attr("d", vis.line(vis.careerSalaryMap));
