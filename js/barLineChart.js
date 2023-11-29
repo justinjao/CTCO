@@ -214,7 +214,7 @@ class BarLineChart {
       })
       .attr("stroke", (d) => (d.key === vis.selectedCareer ? "black" : "unset"))
       .attr("stroke-width", 1.5)
-      .style("fill", "#fccde5")
+      .style("fill", "#669ac7")
       .style("opacity", (d) => d.key === vis.selectedCareer || !vis.selectedCareer ? 1 : 0.5)
       .transition()
       .duration(500)
@@ -230,7 +230,7 @@ class BarLineChart {
       .join("path")
       .attr("class", "chart-line")
       .attr("fill", "none")
-      .attr("stroke", "#e0218a")
+      .attr("stroke", "#a2c2dd")
       .attr("stroke-miterlimit", 1)
       .attr("stroke-width", 2)
       .attr("d", vis.line(vis.careerSalaryMap));
