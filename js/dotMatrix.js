@@ -1,6 +1,3 @@
-// TODO: update constants
-// TODO: sort legend items based on color
-
 const AGGREGATED_CATEGORY_LOOKUP = {
   Science: [
     "A social science (e.g., sociology, psychology, political science, economics)",
@@ -66,7 +63,7 @@ class DotMatrix {
         "28-36": "#cbd5e8",
         "37-45": "#f4cae4",
         "46-54": "#e6f5c9",
-        "55-63": "#fff2ae",
+        "55-63": "#f3e5ab",
         "64-72": "#f1e2cc",
         "73+": "#cccccc",
       },
@@ -86,7 +83,7 @@ class DotMatrix {
       {
         name: "university-study",
         Science: "#8dd3c7",
-        Humanities: "#ffffb3",
+        Humanities: "#f3e5ab",
         "Information Technology": "#bebada",
         Math: "#fb8072",
         Arts: "#80b1d3",
