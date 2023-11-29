@@ -77,7 +77,7 @@ class TreeMap {
       ["To start a business or to freelance", 238, "#b3cde3"],
       ["As a hobby", 280, "#ccebc5"],
       ["To create art or entertainment", 29, "#fed9a6"],
-      ["To meet school requirements", 24, "#ffffcc"],
+      ["To meet school requirements", 24, "#f3e5ab"],
     ];
 
     // Sort the treeDims array by the size (the second element of each sub-array) in descending order

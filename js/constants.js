@@ -1,6 +1,6 @@
 const LOCATION_COLOURS = {
     "Latin America and Caribbean": "#8dd3c7",
-    "East Asia and Pacific": "#ffffb3",
+    "East Asia and Pacific": "#f3e5ab",
     "Europe and Central Asia": "#bebada",
     "Middle East and North Africa": "#fb8072",
     "North America": "#80b1d3",

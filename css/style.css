@@ -6,6 +6,7 @@ body * {
 
 h3 {
   margin-top: 0;
+  font-weight: normal;
   padding-top: 1rem;
   padding-left: 1rem;
   font-size: 20px;
@@ -57,12 +58,12 @@ h3 {
 }
 
 .y-axis-left {
-  color: #fbb7da;
+  color: #669ac7;
   font-weight: bolder;
 }
 
 .y-axis-right {
-  color: #e22c90;
+  color: #a2c2dd;
   font-weight: bolder;
 }
 
@@ -72,11 +73,11 @@ h3 {
 }
 
 .axis-title-left {
-  fill: #fbb7da;
+  fill: #669ac7;
 }
 
 .axis-title-right {
-  fill: #e22c90;
+  fill: #a2c2dd;
   cursor: help;
 }
 
