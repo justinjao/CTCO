@@ -67,7 +67,7 @@ class TreeMap {
       .attr("class", "tree-area")
       .attr("x", vis.config.margin.left + xCenter)
       .attr("y", vis.config.margin.top + yCenter)
-      .style("fill", "white");
+      .style("fill", "#f7f6ed");
 
     // used D3 rollups to find count of each
     vis.treeDims = [

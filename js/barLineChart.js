@@ -230,7 +230,7 @@ class BarLineChart {
       .join("path")
       .attr("class", "chart-line")
       .attr("fill", "none")
-      .attr("stroke", "#a2c2dd")
+      .attr("stroke", "#008080")
       .attr("stroke-miterlimit", 1)
       .attr("stroke-width", 2)
       .attr("d", vis.line(vis.careerSalaryMap));
