@@ -1,4 +1,8 @@
 /* Overall styling */
+* {
+  background-color: #f7f6ed;
+}
+
 body * {
   box-sizing: border-box;
   font-family: "Poppins", sans-serif;
@@ -10,6 +14,10 @@ h3 {
   padding-top: 1rem;
   padding-left: 1rem;
   font-size: 20px;
+}
+
+p {
+  text-align: justify;
 }
 
 /* Layout of visualizations */
@@ -67,7 +75,7 @@ h3 {
 }
 
 .y-axis-right {
-  color: #a2c2dd;
+  color: #008080;
   font-weight: bolder;
 }
 
@@ -81,7 +89,7 @@ h3 {
 }
 
 .axis-title-right {
-  fill: #a2c2dd;
+  fill: #008080;
   cursor: help;
 }
 
@@ -95,7 +103,7 @@ h3 {
 #tooltip {
   position: absolute;
   display: none;
-  background: #fff;
+  background: #f7f6ed;
   border: 1px solid #ddd;
   padding: 8px;
   min-width: 160px;
