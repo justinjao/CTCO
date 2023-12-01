@@ -76,13 +76,10 @@ class SankeyChart {
         var groupedData = d3.group(vis.data, d => d.Location, d => d.CostOfLearningBins)
         var frequencyArray = [];
 
-        console.log("SANKEY DATA")
-        console.log(vis.data)
 
         // Iterate over the grouped data and populate the object
         groupedData.forEach((subGroup, key1) => {
             subGroup.forEach((value, key2) => {
-                var combination = `${key1} - ${key2}`;
                 var frequency = value.length;
 
                 // Create an entry in the object
@@ -119,15 +116,12 @@ class SankeyChart {
             vis.graph.nodes[i] = { "name": d };
         });
 
-        console.log("ISTHISHERE")
-        console.log(vis.sankey)
-        // Applies it to the data. We make a copy of the nodes and links objects
+        // Applies it to the data. We make a copy of the nodes and links objects to avoid deleting original
         const { nodes, links } = vis.sankey({
             nodes: vis.graph.nodes.map(d => Object.assign({}, d)),
             links: vis.graph.links.map(d => Object.assign({}, d))
         });
 
-        console.log(vis.sankey.nodeSort(this.costOfLearningSort))
         vis.nodes = nodes;
         vis.links = links;
 
@@ -137,8 +131,6 @@ class SankeyChart {
 
     renderVis() {
         let vis = this;
-        // Defines a color scale.
-        const color = d3.scaleOrdinal(d3.schemeSet3);
 
         // Creates the rects that represent the nodes.
         const rect = vis.svg.selectAll(".nodes")
@@ -153,18 +145,6 @@ class SankeyChart {
             .attr("width", d => d.x1 - d.x0)
             .attr("fill", "#0000FF")
             .attr("fill", d => vis.colourScale(d.name));
-
-        // const gradient = link.append("linearGradient")
-        //     .attr("id", d => (d.uid = DOM.uid("link")).id)
-        //     .attr("gradientUnits", "userSpaceOnUse")
-        //     .attr("x1", d => d.source.x1)
-        //     .attr("x2", d => d.target.x0);
-        // gradient.append("stop")
-        //     .attr("offset", "0%")
-        //     .attr("stop-color", d => color(d.source.name));
-        // gradient.append("stop")
-        //     .attr("offset", "100%")
-        //     .attr("stop-color", d => color(d.target.name));
 
 
         // Creates the paths that represent the links.
@@ -196,22 +176,17 @@ class SankeyChart {
             .attr("text-anchor", d => d.x0 < vis.config.width / 2 ? "start" : "end")
             .text(d => d.name + ": " + d.value)
 
-        console.log(vis.nodes)
-        console.log(vis.links)
         vis.svg.selectAll(".nodes")
             .on("mouseover", function (sourceNode) {
                 // Highlight all paths from the source node
                 vis.svg.selectAll(".links")
                     .filter(function (path) {
-                        console.log("hehe")
-                        console.log(path.source.name)
-                        console.log(sourceNode)
                         return path.source.name === sourceNode.target.__data__.name || path.target.name === sourceNode.target.__data__.name;
                     })
                     .transition()
                     .style("stroke-opacity", 0.8)
 
-                // // Dim the other paths
+                // Dim the other paths
                 vis.svg.selectAll(".links")
                     .filter(function (otherPath) {
                         return otherPath.source.name !== sourceNode.target.__data__.name && otherPath.target.name !== sourceNode.target.__data__.name;
@@ -232,11 +207,9 @@ class SankeyChart {
         var categoryB = b.name;
         let costOfLearningOrder = ["$0-100", "$101-500", "$501-1000", "$1001-10000", "$>10000"];
 
-        // Find the index of each category in the desired order array
         var indexA = costOfLearningOrder.indexOf(categoryA);
         var indexB = costOfLearningOrder.indexOf(categoryB);
 
-        // Compare the indices to determine the order
         return indexA - indexB;
     }
 
