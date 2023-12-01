@@ -144,6 +144,7 @@ class SankeyChart {
         const rect = vis.svg.selectAll(".nodes")
             .data(vis.nodes)
             .join("rect")
+            .transition().delay(50).duration(500)
             .attr("stroke", "#000")
             .attr("class", "nodes")
             .attr("x", d => d.x0)
@@ -170,6 +171,7 @@ class SankeyChart {
         const link = vis.svg.selectAll(".links")
             .data(vis.links)
             .join("path")
+            .transition().delay(50).duration(500)
             .attr("class", "links")
             .attr("fill", "none") // TODO: colour must match treeMap
             .attr("stroke-opacity", 0.5)
