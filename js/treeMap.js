@@ -118,20 +118,6 @@ class TreeMap {
       (v) => v.length,
       (d) => d.Top_Reason
     );
-    console.log("rolled up data", rolledUpData);
-    console.log("sum of data", vis.data.length);
-    const percentageAgg = rolledUpData.map((d) => [
-      d[0],
-      d[1] / vis.data.length,
-    ]);
-    console.log(percentageAgg, vis.config.height * vis.config.width);
-    // console.log(
-    //   "percentage of areas",
-    //   percentageAgg.map((d) => [
-    //     d[0],
-    //     (d[1] * (vis.config.height * vis.config.width)) / vis.tileWidth,
-    //   ])
-    // );
     vis.renderVis();
   }
 

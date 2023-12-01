@@ -1,31 +1,3 @@
-const AGGREGATED_CATEGORY_LOOKUP = {
-  Science: [
-    "A social science (e.g., sociology, psychology, political science, economics)",
-    "A natural science (e.g., biology, chemistry, physics)",
-    "A health science (e.g., nursing, pharmacy, radiology)",
-    "Environmental science (e.g., earth sciences, sustainability)",
-  ],
-  Humanities: [
-    "A humanities discipline (e.g., literature, history, philosophy)",
-    "Education",
-  ],
-  "Information Technology": [
-    "Information systems, information technology, or system administration",
-    "Computer science, computer engineering, software engineering or data science",
-  ],
-  Math: ["Mathematics or statistics"],
-  Arts: [
-    "Fine arts or performing arts (e.g., graphic design, music, studio, art)",
-  ],
-  Business: ["A business discipline (e.g., accounting, finance, marketing)"],
-  Engineering: [
-    "Another engineering discipline (e.g., civil, electrical, mechanical)",
-  ],
-  Other: ["I didn't attend a university", "Undecided or no major"],
-};
-
-const MAX_BIG_SIZE = 768;
-
 class DotMatrix {
   /**
    * Class constructor with initial configuration
@@ -48,50 +20,7 @@ class DotMatrix {
     this.activeSort = "gender";
     this.data = data;
     this.careerDispatch = careerDispatch;
-    this.legendMapping = [
-      {
-        name: "gender",
-        Male: "#fbb4ae",
-        Female: "#b3cde3",
-        Nonbinary: "#ccebc5",
-        "None of the Above": "#decbe4",
-      },
-      {
-        name: "age",
-        "10-18": "#b3e2cd",
-        "19-27": "#fdcdac",
-        "28-36": "#cbd5e8",
-        "37-45": "#f4cae4",
-        "46-54": "#e6f5c9",
-        "55-63": "#f3e5ab",
-        "64-72": "#f1e2cc",
-        "73+": "#cccccc",
-      },
-      {
-        name: "location",
-        "Latin America and Caribbean":
-          LOCATION_COLOURS["Latin America and Caribbean"],
-        "East Asia and Pacific": LOCATION_COLOURS["East Asia and Pacific"],
-        "Europe and Central Asia": LOCATION_COLOURS["Europe and Central Asia"],
-        "Middle East and North Africa":
-          LOCATION_COLOURS["Middle East and North Africa"],
-        "North America": LOCATION_COLOURS["North America"],
-        "South Asia": LOCATION_COLOURS["South Asia"],
-        "Southeast Asia": LOCATION_COLOURS["Southeast Asia"],
-        "Sub-Saharan Africa": LOCATION_COLOURS["Sub-Saharan Africa"],
-      },
-      {
-        name: "university-study",
-        Science: "#8dd3c7",
-        Humanities: "#f3e5ab",
-        "Information Technology": "#bebada",
-        Math: "#fb8072",
-        Arts: "#80b1d3",
-        Business: "#fdb462",
-        Engineering: "#b3de69",
-        Other: "#fccde5",
-      },
-    ];
+    this.legendMapping = DOT_MATRIX_LEGEND_MAPPING;
     this.initVis();
   }
 
@@ -107,6 +36,7 @@ class DotMatrix {
       vis.config.containerHeight -
       vis.config.margin.top -
       vis.config.margin.bottom;
+
     // Define size of SVG drawing area
     vis.svg = d3
       .select(vis.config.parentElement)
@@ -137,7 +67,6 @@ class DotMatrix {
   }
 
   updateVis() {
-    console.log("UPDATING", this.data);
     let vis = this;
     vis.activeLegend = vis.legendMapping.find((l) => l.name === vis.activeSort);
     if (vis.activeSort === "gender") {
@@ -158,31 +87,6 @@ class DotMatrix {
   }
 
   renderVis() {
-    const university_mapping = {
-      "Information systems, information technology, or system administration":
-        "IT/Systems",
-      "Computer science, computer engineering, software engineering or data science":
-        "Computer Science/Data Science",
-      "Fine arts or performing arts (e.g., graphic design, music, studio, art)":
-        "Fine/Performing Arts",
-      "A social science (e.g., sociology, psychology, political science, economics)":
-        "Social Science",
-      "Another engineering discipline (e.g., civil, electrical, mechanical)":
-        "Other Engineering",
-      "A natural science (e.g., biology, chemistry, physics)":
-        "Natural Science",
-      "Undecided or no major": "Undecided/No Major",
-      "I didn't attend a university": "No University Attendance",
-      "A business discipline (e.g., accounting, finance, marketing)":
-        "Business",
-      "A health science (e.g., nursing, pharmacy, radiology)": "Health Science",
-      "A humanities discipline (e.g., literature, history, philosophy)":
-        "Humanities",
-      "Environmental science (e.g., earth sciences, sustainability)":
-        "Environmental Science",
-      "Mathematics or statistics": "Math/Statistics",
-    };
-
     let vis = this;
     const CIRCLE_RADIUS = vis.data.length < MAX_BIG_SIZE ? 6 : 4;
     const CIRCLE_DIAM = 2 * CIRCLE_RADIUS;
@@ -200,21 +104,9 @@ class DotMatrix {
     let lastDotYPos = 0;
     dotsEnter
       .merge(dots)
-      .attr("cx", (d, i) => (i % DOTS_PER_ROW) * DOT_UNIT + ROW_OFFSET)
-      .attr("cy", (d, i) => {
-        lastDotYPos =
-          Math.floor(i / DOTS_PER_ROW) * DOT_UNIT +
-          vis.config.margin.top +
-          CIRCLE_RADIUS;
-        return lastDotYPos;
-      })
       .attr("r", (d) => CIRCLE_RADIUS)
       .attr("fill", (d) => vis.renderBasedOnSort(d, vis.activeSort))
-      .style("opacity", (d) =>
-        vis.selectedCareer && d.Interested_Careers !== vis.selectedCareer
-          ? "0.4"
-          : "1"
-      )
+
       .style("stroke", "black")
       .style("stroke-width", (d) =>
         d.Interested_Careers === vis.selectedCareer ? 1.5 : 0.5
@@ -240,14 +132,43 @@ class DotMatrix {
         // Remove the outline when the mouse leaves
       })
       .on("click", (e, d) => {
-        console.log("I clicked", d.Interested_Careers);
-
         let newCareer = undefined;
         if (vis.selectedCareer !== d.Interested_Careers) {
           newCareer = d.Interested_Careers;
         }
         vis.careerDispatch.call("CareerChanged", e, newCareer);
-      });
+      })
+      .style("opacity", (d) =>
+        vis.selectedCareer && d.Interested_Careers !== vis.selectedCareer
+          ? 0.5
+          : 1
+      );
+
+    if (vis.data.length < MAX_BIG_SIZE) {
+      dotsEnter
+        .merge(dots)
+        .transition()
+        .duration(500)
+        .attr("cx", (d, i) => (i % DOTS_PER_ROW) * DOT_UNIT + ROW_OFFSET)
+        .attr("cy", (d, i) => {
+          lastDotYPos =
+            Math.floor(i / DOTS_PER_ROW) * DOT_UNIT +
+            vis.config.margin.top +
+            CIRCLE_RADIUS;
+          return lastDotYPos;
+        });
+    } else {
+      dotsEnter
+        .merge(dots)
+        .attr("cx", (d, i) => (i % DOTS_PER_ROW) * DOT_UNIT + ROW_OFFSET)
+        .attr("cy", (d, i) => {
+          lastDotYPos =
+            Math.floor(i / DOTS_PER_ROW) * DOT_UNIT +
+            vis.config.margin.top +
+            CIRCLE_RADIUS;
+          return lastDotYPos;
+        });
+    }
 
     const legendItems = vis.legendContainer.selectAll(".legend-item").data(
       Object.keys(vis.activeLegend).filter((d) => d != "name"),
@@ -284,8 +205,8 @@ class DotMatrix {
       .attr("fill", (d) => vis.activeLegend[d])
       .style("stroke", "black")
       .style("stroke-width", 0.5);
-    legendItemsEnter
 
+    legendItemsEnter
       .append("text")
       .text((d) => d)
       .attr("color", "black")

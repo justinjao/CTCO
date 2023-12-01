@@ -58,6 +58,10 @@ p {
   stroke-width: 1.5px !important;
 }
 
+.dot.deselect {
+    filter: brightness(150%);
+}
+
 /* Bar line chart */
 .bar:hover {
   cursor: pointer;
