@@ -134,13 +134,16 @@ class DotMatrix {
           .style("left", event.pageX + vis.config.tooltipPadding + "px")
           .style("top", event.pageY + vis.config.tooltipPadding + "px").html(`
     
-         <div><li>Age: ${d.Age}</li></div>
-         <li>Gender: ${d.Self_Perception}</li>
-         <li>Location: ${d.Location}</li>
-           <li>University study: ${d.University_Study}</li>
-           <li>Current Employment Status: ${d.Current_Employment_Status}</li>
-           <li>Current Field of Work: ${d.Current_Field_of_Work}</li>
-           <li>Career Aspirations: ${d.Interested_Careers}</li>
+         <div><li><b>Age:</b> ${d.Age}</li></div>
+         <li><b>Gender:</b> ${d.Self_Perception}</li>
+         <li><b>Location:</b> ${d.Location}</li>
+         <li><b>Number of Children:</b> ${d.Number_of_Children}</li>
+           <li><b>University study:</b> ${d.University_Study}</li>
+           <li><b>Hours Learning Each Week:</b> ${d.Hours_Learning_Each_Week}</li>
+           <li><b>Months Programming:</b> ${d.Months_Programming}</li>
+           <li><b>Current Employment Status:</b> ${d.Current_Employment_Status}</li>
+           <li><b>Current Field of Work:</b> ${d.Current_Field_of_Work}</li>
+           <li><b>Career Aspirations:</b> ${d.Interested_Careers}</li>
        `);
       })
       .on("mouseleave", () => {
