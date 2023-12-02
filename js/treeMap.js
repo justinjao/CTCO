@@ -18,6 +18,7 @@ class TreeMap {
       },
     };
     this.data = data;
+    // Event dispatcher for handling interactions and updates
     this.dispatch = filterDispatch;
     this.initVis();
   }
@@ -35,6 +36,7 @@ class TreeMap {
       vis.config.margin.top -
       vis.config.margin.bottom;
 
+    // Set the width of each tile in the treemap
     vis.tileWidth = vis.config.width / 2.514;
     // Define size of SVG drawing area
     vis.svg = d3
@@ -69,7 +71,8 @@ class TreeMap {
       .attr("y", vis.config.margin.top + yCenter)
       .style("fill", "#f7f6ed");
 
-    // used D3 rollups to find count of each
+    // Define the dimensions, count, and colors for the treemap tiles
+    // Used D3 rollups to find count of each
     vis.treeDims = [
       ["To succeed in current career", 187, "#bebada"],
       ["To start your first career", 500, "#8dd3c7"],
@@ -113,17 +116,20 @@ class TreeMap {
 
   updateVis() {
     let vis = this;
+    // Roll up data using D3 rollups to find the count of each reason
     const rolledUpData = d3.rollups(
       vis.data,
       (v) => v.length,
       (d) => d.Top_Reason
     );
+    vis.data.rolledUpData = rolledUpData;
     vis.renderVis();
   }
 
   renderVis() {
     let vis = this;
 
+    // Select all rectangle groups representing treemap nodes
     const rectangleGroups = vis.treemapGroup
       .selectAll(".tree-node-group")
       .data(vis.hierarchy.leaves(), (d) => d.data[0]);
@@ -133,13 +139,15 @@ class TreeMap {
       .attr("class", "tree-node-group");
     rectangleGroups.exit().remove();
 
+    // Merge new and existing rectangle groups, and handle click events
     newRectangleGroups.merge(rectangleGroups).on("click", function (e, d) {
+      // Toggle selectedReason on click
       if (vis.selectedReason !== d.data[0]) {
         vis.selectedReason = d.data[0];
       } else {
         vis.selectedReason = undefined;
       }
-
+      // Trigger ReasonChanged event with selectedReason
       vis.dispatch.call("ReasonChanged", e, vis.selectedReason);
       vis.renderVis();
     });
@@ -165,11 +173,23 @@ class TreeMap {
     // Add black outline when hovering over the tree rectangles
     rectangles
       .merge(newRectangles)
-      .on("mouseover", function () {
+      .on("mouseover", function (event, d) {
+        console.log("HOVER DATA ", d);
         d3.select(this).attr("stroke", "black").attr("stroke-width", 2);
+        // Show count of each motivation
+        d3.select("#tooltip")
+          .style("display", "block")
+          .html(
+            `
+        <div class="bold">${d.data[0]}: ${d.data[1]}</div>
+        `
+          )
+          .style("left", event.pageX + vis.config.tooltipPadding + "px")
+          .style("top", event.pageY + vis.config.tooltipPadding + "px");
       })
       .on("mouseout", function () {
-        d3.select(this).attr("stroke", "none"); // Remove the outline on mouseout
+        // Remove the outline on mouseout
+        d3.select(this).attr("stroke", "none");
       })
       .style("stroke", (d) =>
         d.data[0] === vis.selectedReason ? "black" : "transparent"
@@ -190,14 +210,18 @@ class TreeMap {
       .enter()
       .append("text")
       .attr("class", "tree-label")
+      // Set the text content based on the data
       .text((d) => d.data[0])
+      // Set the x and y coordinates for the text elements
       .attr("x", (d) => (d.x0 + d.x1 - 5) / 2)
       .attr("y", (d) => (d.y0 + d.y1 - 5) / 2)
+      // Style the text elements
       .style("font-size", "11.5px")
       .style("fill", "black")
       .style("cursor", "pointer")
       .style("text-anchor", "middle")
       .style("dominant-baseline", "middle")
+      // Call the wrap function to wrap text within the specified width
       .call(vis.wrap, 80);
   }
 

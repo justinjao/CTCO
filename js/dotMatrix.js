@@ -17,9 +17,12 @@ class DotMatrix {
         left: 50,
       },
     };
+    // Default sorting criterion
     this.activeSort = "gender";
     this.data = data;
+    // Event dispatcher for career changes
     this.careerDispatch = careerDispatch;
+    // Mapping for legend colors
     this.legendMapping = DOT_MATRIX_LEGEND_MAPPING;
     this.initVis();
   }
@@ -45,8 +48,10 @@ class DotMatrix {
       .attr("width", vis.config.containerWidth)
       .attr("height", vis.config.containerHeight);
 
+    // Group for the matrix area
     vis.matrixArea = vis.svg.append("g");
 
+    // Background rectangle for matrix area
     vis.matrixArea
       .append("rect")
       .attr("width", vis.config.width)
@@ -55,10 +60,12 @@ class DotMatrix {
       .attr("x", vis.config.margin.left)
       .attr("y", vis.config.margin.top);
 
+    // Group for the legend
     vis.legendContainer = vis.svg
       .append("g")
       .attr("class", "dot-matrix-legend-container");
 
+    // Event listener for career changes
     vis.careerDispatch.on("CareerChanged.Matrix", function (c, e) {
       vis.selectedCareer = c;
       vis.renderVis();
@@ -68,6 +75,8 @@ class DotMatrix {
 
   updateVis() {
     let vis = this;
+
+    // Sorting based on the active criterion
     vis.activeLegend = vis.legendMapping.find((l) => l.name === vis.activeSort);
     if (vis.activeSort === "gender") {
       vis.data = vis.data.sort((a, b) =>
@@ -88,6 +97,7 @@ class DotMatrix {
 
   renderVis() {
     let vis = this;
+    // Constants for circle dimensions and spacing based on data size
     const CIRCLE_RADIUS = vis.data.length < MAX_BIG_SIZE ? 6 : 4;
     const CIRCLE_DIAM = 2 * CIRCLE_RADIUS;
     const CIRCLE_SPACING = vis.data.length < MAX_BIG_SIZE ? 5 : 2;
@@ -95,13 +105,18 @@ class DotMatrix {
     const DOTS_PER_ROW = Math.floor(vis.config.width / DOT_UNIT);
     const ROW_OFFSET = vis.config.margin.left + CIRCLE_RADIUS;
 
+    // Select and bind data to circle elements
     const dots = vis.matrixArea.selectAll(".dot").data(vis.data, (d) => d.ID);
     dots.exit().remove();
+    // Enter selection for new data points
     const dotsEnter = dots
       .enter()
       .append("circle")
       .attr("class", (d, i) => `dot d-${i}`);
+
+    // Find last dot of matrix in order to position legend close to it
     let lastDotYPos = 0;
+    // Merge and update existing circles
     dotsEnter
       .merge(dots)
       .attr("r", (d) => CIRCLE_RADIUS)
@@ -112,6 +127,7 @@ class DotMatrix {
         d.Interested_Careers === vis.selectedCareer ? 1.5 : 0.5
       )
       .on("mouseover", (event, d) => {
+        // Display tooltip on mouseover
         d3
           .select("#tooltip")
           .style("display", "block")
@@ -132,6 +148,7 @@ class DotMatrix {
         // Remove the outline when the mouse leaves
       })
       .on("click", (e, d) => {
+        // Dispatch career change event on click
         let newCareer = undefined;
         if (vis.selectedCareer !== d.Interested_Careers) {
           newCareer = d.Interested_Careers;
@@ -144,6 +161,7 @@ class DotMatrix {
           : 1
       );
 
+    // Position circles based on data size
     if (vis.data.length < MAX_BIG_SIZE) {
       dotsEnter
         .merge(dots)
@@ -170,6 +188,7 @@ class DotMatrix {
         });
     }
 
+    // Update and position legend items
     const legendItems = vis.legendContainer.selectAll(".legend-item").data(
       Object.keys(vis.activeLegend).filter((d) => d != "name"),
       (d) => d
@@ -188,6 +207,7 @@ class DotMatrix {
       .append("g")
       .attr("class", "legend-item");
 
+    // Merge and update existing legend items
     legendItemsEnter.merge(legendItems).attr("transform", (d, i) => {
       const x = (i % itemsPerRow) * itemWidth;
       const y = Math.floor(i / itemsPerRow) * itemHeight;
@@ -199,6 +219,7 @@ class DotMatrix {
         )
       })`;
     });
+    // Append legend circles
     legendItemsEnter
       .append("circle")
       .attr("r", 6)
@@ -206,6 +227,7 @@ class DotMatrix {
       .style("stroke", "black")
       .style("stroke-width", 0.5);
 
+    // Append legend text
     legendItemsEnter
       .append("text")
       .text((d) => d)
@@ -214,8 +236,10 @@ class DotMatrix {
       .attr("y", 5);
   }
 
+  // Determine the color for rendering based on the sorting criterion
   renderBasedOnSort(d, sort) {
     let vis = this;
+    // Check the sorting criterion and return the corresponding legend color
     if (sort === "gender") {
       const perception = d.Self_Perception;
       return vis.activeLegend[perception];
@@ -223,12 +247,15 @@ class DotMatrix {
       const location = d.Location;
       return vis.activeLegend[location];
     } else if (sort === "university-study") {
+      // If the sorting criterion is 'university-study', use the aggregated name
       return vis.activeLegend[vis.findAggregateName(d)];
     } else {
       const age = d.Age;
       return vis.activeLegend[age];
     }
   }
+
+  // Find the aggregated name based on the university study field
   findAggregateName(d) {
     let vis = this;
 

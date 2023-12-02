@@ -32,7 +32,9 @@ d3.csv("data/2021CoderFiltered.csv").then((data) => {
     });
   });
 
+  // Dispatch for treemap and other views
   const filterDispatch = d3.dispatch("ReasonChanged");
+  // Dispatch for bidirectional relationship between dot matrix and bar-line chart
   const careerDispatch = d3.dispatch("CareerChanged");
   const filteredData = data;
   const dotMatrix = new DotMatrix(
@@ -43,6 +45,7 @@ d3.csv("data/2021CoderFiltered.csv").then((data) => {
     careerDispatch
   );
 
+  // render treemap
   const treeMap = new TreeMap(
     {
       parentElement: "#treemap-vis",
@@ -53,7 +56,6 @@ d3.csv("data/2021CoderFiltered.csv").then((data) => {
 
   filterDispatch.on("ReasonChanged", function (f, e) {
     const newFilteredData = f ? data.filter((d) => d.Top_Reason === f) : data;
-    console.log("data filtered ", newFilteredData);
     dotMatrix.data = newFilteredData;
     dotMatrix.updateVis();
     barLineChart.data = newFilteredData;
@@ -85,10 +87,8 @@ d3.csv("data/2021CoderFiltered.csv").then((data) => {
     },
     filteredData
   );
-  /**
-   * Input field event listener
-   */
 
+  // radio button group to set type of sort for dot matrix
   d3.select("#dot-matrix-sorting").on("change", function (event) {
     // Get selected demographic
     dotMatrix.activeSort = event.target.value;
