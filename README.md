@@ -1,6 +1,6 @@
-# Cracking the Coding Odyssey
+# Cracking the Coding Odyssey :space_invader:
 
-A data visualization project to explore the 2021 FreeCodeCamp New Programmers Dataset. We visualize how people are learning to code, and what their aspirations are.
+A data visualization project to explore the 2021 FreeCodeCamp New Programmers Dataset. We visualize why and how people are learning to code, and what their aspirations are.
 
 ### External References
 
@@ -21,3 +21,4 @@ A data visualization project to explore the 2021 FreeCodeCamp New Programmers Da
 - Combined bar-line chart based on: https://observablehq.com/@d3/bar-line-chart
 - D3 hierarchy: https://observablehq.com/@d3/d3-hierarchy
 - Emoji as a Favicon for tab based on: https://css-tricks.com/emoji-as-a-favicon/
+- ColorBrewer Qualitative Color Scheme: https://colorbrewer2.org/#type=qualitative&scheme=Accent&n=5
