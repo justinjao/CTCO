@@ -10,6 +10,7 @@ A data visualization project to explore the 2021 FreeCodeCamp New Programmers Da
   - Data transformations for frequency count in `bubbleChart.js`
   - CostOfLearningBins generation in `main.js`
   - Sorting of CostOfLearningBins in `sankeyChart.js`
+  - Path highlighting on hover in `sankeyChart.js`
   - Layout of legend items for dot matrix
   - Layout of bubble items for bubble chart
   - Mapping university studies to broader categories for dot matrix
