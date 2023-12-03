@@ -188,7 +188,7 @@ class BubbleChart {
             .html(`
             <div class="bold">${d.name}</div>
             <div class="italic">${d.category.replace(/_/g, ' ')}</div>
-            <div>${d.count}</div>
+            <div>${d.count} people found it useful</div>
             `)
             .style('left', (event.pageX + vis.config.tooltipPadding) + 'px')
             .style('top', (event.pageY + vis.config.tooltipPadding) + 'px');
