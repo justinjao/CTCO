@@ -133,17 +133,24 @@ class DotMatrix {
           .style("display", "block")
           .style("left", event.pageX + vis.config.tooltipPadding + "px")
           .style("top", event.pageY + vis.config.tooltipPadding + "px").html(`
-    
-         <div><li><b>Age:</b> ${d.Age}</li></div>
-         <li><b>Gender:</b> ${d.Self_Perception}</li>
-         <li><b>Location:</b> ${d.Location}</li>
-         <li><b>Number of Children:</b> ${d.Number_of_Children}</li>
+          Hi, I am between <b>${
+            d.Age
+          }</b> years old. I identify as  <b>${d.Self_Perception.toLowerCase()}</b>. I am located in <b>${
+          d.Location
+        }</b>. 
+        <p>Other facts about me:</p>
+        <li><b>Career Aspiration:</b> ${d.Interested_Careers}</li>
            <li><b>University study:</b> ${d.University_Study}</li>
-           <li><b>Hours Learning Each Week:</b> ${d.Hours_Learning_Each_Week}</li>
+           <li><b>Hours Learning Each Week:</b> ${
+             d.Hours_Learning_Each_Week
+           }</li>
            <li><b>Months Programming:</b> ${d.Months_Programming}</li>
-           <li><b>Current Employment Status:</b> ${d.Current_Employment_Status}</li>
+           <li><b>Current Employment Status:</b> ${
+             d.Current_Employment_Status
+           }</li>
            <li><b>Current Field of Work:</b> ${d.Current_Field_of_Work}</li>
-           <li><b>Career Aspirations:</b> ${d.Interested_Careers}</li>
+           <li><b>Number of Children:</b> ${d.Number_of_Children}</li>
+         
        `);
       })
       .on("mouseleave", () => {
