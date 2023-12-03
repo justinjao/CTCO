@@ -51,7 +51,7 @@ class SankeyChart {
             .attr("height", vis.config.height)
             .attr('transform', `translate(${vis.config.margin.left},0)`);;
 
-        // Constructs and configures a Sankey generator.
+        // Constructs and configure Sankey generator
         vis.sankey = d3.sankey()
             .nodeId(d => d.index)
             .nodeSort(vis.costOfLearningSort)
@@ -75,7 +75,6 @@ class SankeyChart {
         // DATA WRANGLING:
         var groupedData = d3.group(vis.data, d => d.Location, d => d.CostOfLearningBins)
         var frequencyArray = [];
-
 
         // Iterate over the grouped data and populate the object
         groupedData.forEach((subGroup, key1) => {
@@ -136,7 +135,6 @@ class SankeyChart {
         const rect = vis.svg.selectAll(".nodes")
             .data(vis.nodes)
             .join("rect")
-            .transition().delay(50).duration(500)
             .attr("stroke", "#000")
             .attr("class", "nodes")
             .attr("x", d => d.x0)
@@ -144,7 +142,31 @@ class SankeyChart {
             .attr("height", d => d.y1 - d.y0)
             .attr("width", d => d.x1 - d.x0)
             .attr("fill", "#0000FF")
-            .attr("fill", d => vis.colourScale(d.name));
+            .attr("fill", d => vis.colourScale(d.name))
+            .on("mouseover", function (sourceNode) {
+                // Highlight all paths from the source node
+                vis.svg.selectAll(".links")
+                    .filter(function (path) {
+                        return path.source.name === sourceNode.target.__data__.name || path.target.name === sourceNode.target.__data__.name;
+                    })
+                    .transition()
+                    .style("stroke-opacity", 0.8)
+
+                // Dim the other paths
+                vis.svg.selectAll(".links")
+                    .filter(function (otherPath) {
+                        return otherPath.source.name !== sourceNode.target.__data__.name && otherPath.target.name !== sourceNode.target.__data__.name;
+                    })
+                    .transition()
+                    .style("stroke-opacity", 0.1)
+            })
+            .on("mouseleave", function () {
+                // Restore the original styles on mouseleave
+                vis.svg.selectAll(".links")
+                    .transition()
+                    .style("stroke-opacity", 0.5)
+            });
+
 
 
         // Creates the paths that represent the links.
@@ -176,30 +198,6 @@ class SankeyChart {
             .attr("text-anchor", d => d.x0 < vis.config.width / 2 ? "start" : "end")
             .text(d => d.name + ": " + d.value)
 
-        vis.svg.selectAll(".nodes")
-            .on("mouseover", function (sourceNode) {
-                // Highlight all paths from the source node
-                vis.svg.selectAll(".links")
-                    .filter(function (path) {
-                        return path.source.name === sourceNode.target.__data__.name || path.target.name === sourceNode.target.__data__.name;
-                    })
-                    .transition()
-                    .style("stroke-opacity", 0.8)
-
-                // Dim the other paths
-                vis.svg.selectAll(".links")
-                    .filter(function (otherPath) {
-                        return otherPath.source.name !== sourceNode.target.__data__.name && otherPath.target.name !== sourceNode.target.__data__.name;
-                    })
-                    .transition()
-                    .style("stroke-opacity", 0.1)
-            })
-            .on("mouseleave", function () {
-                // Restore the original styles on mouseleave
-                vis.svg.selectAll(".links")
-                    .transition()
-                    .style("stroke-opacity", 0.5)
-            });
     }
 
     costOfLearningSort(a, b) {
