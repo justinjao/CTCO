@@ -174,7 +174,6 @@ class TreeMap {
     rectangles
       .merge(newRectangles)
       .on("mouseover", function (event, d) {
-        console.log("HOVER DATA ", d);
         d3.select(this).attr("stroke", "black").attr("stroke-width", 2);
         // Show count of each motivation
         d3.select("#tooltip")
