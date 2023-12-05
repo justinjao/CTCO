@@ -190,6 +190,7 @@ class TreeMap {
       .on("mouseout", function () {
         // Remove the outline on mouseout
         d3.select(this).attr("stroke", "none");
+        d3.select("#tooltip").style("display", "none");
       })
       .style("stroke", (d) =>
         d.data[0] === vis.selectedReason ? "black" : "transparent"
