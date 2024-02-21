@@ -2,6 +2,8 @@
 
 A data visualization project to explore the 2021 FreeCodeCamp New Programmers Dataset. We visualize why and how people are learning to code, and what their aspirations are.
 
+Developed in collaboration with Albert Chan (@albertywchan), Miranda Chan (@mcctm), and Tendy Su (@tendy-s).
+
 ### External References
 
 - Sankey Diagram chart based on: https://observablehq.com/@d3/sankey/2?intent=fork
